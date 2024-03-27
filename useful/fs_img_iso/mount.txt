@@ -1,0 +1,1 @@
+sudo mount -o offset=$((1542144 * 512)), sizelimit=$((5242880 * 512)) ro... /mnt/img13

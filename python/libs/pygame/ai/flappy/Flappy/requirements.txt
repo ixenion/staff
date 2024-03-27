@@ -1,0 +1,13 @@
+pip3 install pygame
+	if not working:
+	apt install mercurial (15 mb)
+	#git clone https://github.com/pygame/pygame (16 mb)
+	cd pygame
+	apt install python3-dev python3-numpy libsdl-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsmpeg-dev libportmidi-dev libavformat-dev libswscale-dev libjpeg-dev libfreetype6-dev (159 mb)
+	apt install python3-pygame-sdl2 (2500 kb)
+		apt install libsdl2-image-2.0-0 (16449 kb) libsdl2-mixer-2.0-0 (8500 kb) libsdl2-mixer-2.0-0 ()
+			apt install libjpeg62-turbo-dev (770 kb)
+	pip3 install pygame
+	#pyhton3 setup.py build
+	#python3 setup.py install
+pip3 install neat-python (44 kb)

@@ -1,0 +1,7 @@
+# install extention from
+https://www.virtualbox.org/wiki/Downloads
+	VrtualBox 7.0.0 Oracle VM VirtualBox Extension Pack
+	All supported platforms
+
+# check camera
+ffplay /dev/video0

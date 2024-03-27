@@ -1,0 +1,28 @@
+##########################################################
+#################   picture   ############################
+##########################################################
+
+to get icons for project:
+https://flaticon.com
+for pygame icon use 32x32 pix img
+also here download game pictures (64x64)
+temporal444222111@yandex.com
+wesdxc123
+
+temp444/Qwaszx123!
+
+to resize img:
+$apt install imagemagick (20 mb)
+# to get curent img w & h
+$identify -format "%wx%h" image.jpg
+# to change size
+convert imag.jpg -resize 600x400\> newimg.jpg
+# to invert colors
+convert image.png -channel RGB -negate newimage.png
+
+
+##################################################################
+#####################   fonts   ##################################
+##################################################################
+
+https://www.dafont.com

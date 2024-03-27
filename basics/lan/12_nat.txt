@@ -1,0 +1,216 @@
+
+
+NAT - Network Address Translation
+
+# local IPs
+10.0.0.0/8
+172.16.0.0/12
+192.168.0.0/16
+
+# nat types
+static
+dynamic
+
+
+
+########################
+# static NAT
+########################
+
+# here one local IP address have one white (external, web) IP addr
+# all incomming packets on white IP be transmitted (translated) to that partilar local IP
+
+# setup
+router(config)#ip nat inside source static 172.16.6.5 198.51.100.2
+# 172.16.6.5 has white IP - 198.51.100.2
+# used when setting vpn manualy
+
+
+########################
+# dynamic NAT
+########################
+
+# you have a pool of white addesses
+# 198.51.100.0/28 (16 addresses) e.g.
+# x.x.x.0 & x.x.x.15 are broadcast (reserved, can't use)
+# anothere 2 adresses assigned to the equipment
+# so thus we have 12 addresses which can use
+# to let users go to the internet
+
+# decline pool
+router(config)#ip nat pool lol_pool 198.51.100.3 198.51.100.14 
+# set acl which allow all packets with source addr 172.16.6.x (x: 0-255)
+router(config)#acess-list 100 permit ip 172.16.6.0 0.0.0.255 any
+# connecct acl and pool
+router(config)#ip nat inside source list 100 pool lol_pool
+
+# as soon as white IPs ends, no new user (13th and above)
+# don't get access to the internet
+# but who good luck to have one (of 12)
+# will be able to enter the internet
+
+# reset all current translations 
+# and free all white addresses
+router(config)#clear ip nat translation *
+
+# but here is no possibility
+# to get access from the inside to PCs in that particular local network
+# without port forwarding
+
+
+########################
+# Many-to-one
+########################
+
+(Overload, port address translation [PAT], IP Masquerading, many-yo-one NAT)
+
+Router(config)#access-list 101 permit 172.16.4.0 0.0.0.255
+Router(config)#ip nat inside source list 101 interface fa0/1 overload
+# also there is possibility to setup pool
+Router(config)#ip nat pool lol_pool 198.51.100.2 198.51.100.14
+Router(config)#access-list 100 permit 172.16.6.0 0.0.0.255
+Router(config)#ip nat inside source list 100 pool lol_pool overload
+
+# port forwarding (mapping)
+Router(config)#ip nat inside source statick tcp 172.16.0.2 80 198.51.100.2 80 extendable
+
+# it's prefered to use Cisco ASA or PC for NAT due to heavy load
+
+
+
+########################
+# practice
+########################
+
+192.0.2.0/24 - public Servers
+
+# router needs to know
+# where to send packets to the internet
+# so configure defolt route
+msk-arat-gw1(config)#ip route 0.0.0.0 0.0.0.0 198.51.100.1
+# 198.51.100.1 - address from the provider pool 198.51.100.0/28
+
+# setup pool
+msk-arat-gw1(config)#ip nat pool main_pool 198.51.100.2 198.51.100.14 netmask 255.255.255.240
+# acl
+msk-arat-gw1(config)#ip access-list extended nat-inet
+
+
+########
+Management subnetwork
+
+# has no internet at all
+
+
+########
+PTO hosts
+
+# have access to linkmeup.ru only
+msk-arat-gw1(config-ext-nacl)#permit tcp 172.16.3.0 0.0.0.255 host 192.0.2.2 eq 80
+
+
+########
+Finance
+
+# give all hosts access to all (two) servers
+msk-arat-gw1(config-ext-nacl)#permit ip 172.16.5.0 0.0.0.255 host 192.0.2.3
+msk-arat-gw1(config-ext-nacl)#permit ip 172.16.5.0 0.0.0.255 host 192.0.2.4
+
+
+########
+FEO
+
+# give internet access finance dirrector only (it is one ip)
+msk-arat-gw1(config-ext-nacl)#permit ip host 172.16.4.123 any
+
+
+########
+Other
+
+msk-arat-gw1(config-ext-nacl)#permit ip host 172.16.6.61 any
+msk-arat-gw1(config-ext-nacl)#permit ip host 172.16.6.66 any
+
+
+########
+spb & kemerovo filials
+
+msk-arat-gw1(config-ext-nacl)#permit ip host 172.16.16.222 any
+msk-arat-gw1(config-ext-nacl)#permit ip host 172.16.17.222 any
+msk-arat-gw1(config-ext-nacl)#permit ip host 172.16.24.222 any
+
+
+##########
+# start nat
+
+msk-arbat-gw1(config)#ip nat inside source list nat-inet pool main_pool overload
+
+# "inside" for internal interfaces
+# "outside" - for external
+msk-arbat-gw1(config)#int fa0/0.101
+msk-arbat-gw1(config-subif)#ip nat inside
+msk-arbat-gw1(config)#int fa0/0.102
+msk-arbat-gw1(config-subif)#ip nat inside
+msk-arbat-gw1(config)#int fa0/0.103
+msk-arbat-gw1(config-subif)#ip nat inside
+msk-arbat-gw1(config)#int fa0/0.104
+msk-arbat-gw1(config-subif)#ip nat inside
+msk-arbat-gw1(config)#int fa0/1.6
+msk-arbat-gw1(config-subif)#ip nat outside
+# because router need to know from where packets incomming (which needs to be processed) and outcomming
+
+
+########################
+# DNS
+########################
+
+# local dns server allow to use domain name instead of Server IP
+# set "DNS Server" IP parameter at PC's IP configuration
+
+
+
+########################
+# Servers
+########################
+
+# need to portforward
+# to be able connect from the internet
+# web
+msk-arbat-gw1(config)#ip nat inside source static tcp 172.16.0.2 80 198.51.100.2 80
+msk-arbat-gw1(config)#int fa0/0.3
+msk-arbat-gw1(config-subif)#ip nat inside
+# now web page is availb at 198.51.100.2
+
+# file server
+msk-arbat-gw1(config)#ip nat inside source static tcp 172.16.0.3 20 198.51.100.3 20
+msk-arbat-gw1(config)#ip nat inside source static tcp 172.16.0.3 21 198.51.100.3 21
+# that's why in acl 20,21 ports were opened for all users
+
+# mail server
+msk-arbat-gw1(config)#ip nat inside source static tcp 172.16.0.4 25 198.51.100.4 25
+msk-arbat-gw1(config)#ip nat inside source static tcp 172.16.0.4 110 198.51.100.4 110
+# then set up mail server, specify domain and create 2 users
+# then make entry on mail Server IP and it's domain name into DNS Server Config
+
+
+########################
+# RDP access
+########################
+
+msk-arbat-gw1(config)#ip nat inside source static tcp 172.16.6.61 3389 198.51.100.10 3389
+msk-arbat-gw1(config)#ip nat inside source static tcp 172.16.6.66 3398 198.51.100.10 3398
+
+
+
+########################
+# rate-limit
+########################
+
+router(config)#access-list 100 permit ip 192.168.1.0 0.0.0.255 any
+router(config)#access-list 101 permit ip 192.168.2.0 0.0.0.255 any
+router(config)#interface fa0/0
+router(config-subif)#rate-limit output access-group 100 1544000 64000 64000 conform-action transmit exceed-action drop
+router(config-subif)#rate-limit output access-group 101 64000 16000 16000 conform-action transmit exceed-action drop
+
+
+
+

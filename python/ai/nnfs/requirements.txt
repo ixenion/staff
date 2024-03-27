@@ -1,0 +1,5 @@
+pip3 install numpy
+pip3 install nnsf
+pip3 install matplotlib
+# random
+pip3 install tensorflow ~520mb (tensorflow-gpu)

@@ -1,0 +1,16 @@
+
+1. batch mode
+tasks formed into batch. Second task shifts first one when first require input/output.
+And first waits until secon done or be interrupted as first.
+
+  task1
+---------- -(in/out)-		    ---------
+            task2
+	   -----------(endOfTask2)-
+
+
+
+2. Time devision mode
+each kwant processing task stops and processor looks for more important task (user input for example)
+
+

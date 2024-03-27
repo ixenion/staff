@@ -1,0 +1,20 @@
+
+
+########################
+# banner setup
+########################
+
+SWITCH1>enable
+SWITCH1#configure terminal
+SWITCH1(config)#banner motd q
+Enter the text message. End with the character 'q'.
+
+BANNER EXAMPLE
+
+q
+
+
+SWITCH1(config)#exit
+SWITCH1#copy running-config startap-config
+
+

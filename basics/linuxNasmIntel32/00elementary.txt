@@ -1,0 +1,116 @@
+
+# to see hex of binary
+xxd <inputBinary>
+
+
+# sections:
+setion .text - code section
+setion .data - inicialised data section
+section .bss - non init. data section
+
+# reserve non init data:
+resb - (reserve byte) reserve in 1xbytes (8bits)
+resw - (reserve word) reserve in 2xbytes (16bits)
+resd - (reserve in double words) reserve in 4xbytes (32bits)
+# use section .bss
+# example1:
+string resb 20 ; reserve 20x1 bytes (20 bytes tot, for symbol string storage) 
+count resw 256 ; reserve 256x2 bytes (512 tot, for some counters)
+x resd 1       ; res. 1x4 bytes (4 bytes tot, for some big (not float) number storage)
+string, count, x - are markers which indicate to the first byte of reserved address section
+
+# reserve init data:
+db - single byte diretive
+dw - x2
+dd - x4
+# example2:
+fibon dw 1, 1, 2, 3, 5, 8, 13, 21 (8x2 bytes - 16 bytes tot)
+
+
+# hex (0-15)
+h  - 2af3h, but if a21 - 0a21h
+$  - $2af3, but if f9 - $0f9
+0x - 0x2af3
+
+# octo (0-7)
+o - 634o
+q - 634q
+
+# binary (0-1)
+b - 10011011b
+
+
+# ASCII (used numbers 1-127)
+# to store need only 1byte cell
+0 - 48
+7 - 55
+A - 65
+space - 32
++ - 43
+\n - 10 (new line symbol)
+# but no need to use code
+# example:
+fig7 db '7'
+# or
+fir7 db "7"
+# or even:
+welmsg db 'Welcome to Cyberespace!'
+# as said above "welmsg is address
+panic db 'So I say: "Don', "'",'t panic"'
+
+
+
+
+
+
+# REGISTERS (intel)
+# general (common) purpose registers
+eax - Extended, Accumulator (32bits?). used at all arithmetic operations, result stored also there 
+ebx - Extended, Base. No any spetial purpose ni 32b (though in 16b there was)
+ecx - Extended, Counter 
+edx - Extended, Data. Used when integral (celochislennoe) multiplection result doesnot fit at eax.
+	also stores Higher (starshuy) part of divident, and after division stores remainder (ostatok) of division
+	5/2 - 5 is divident, 2 is devisor
+
+esi - source index (also si)	-| used for copy/paste
+edi - destination index (di)	-| and other things
+ebp - extended base pointer (bp)
+esp - extended stack pointer
+
+# segment register, not used with flat memory model, to be more exact:
+# The OS by itself fills in these regs, which (the regs) may be changed my user task program
+# but nothing good is happen (emergency exit - most expected)
+cs
+ss
+ds
+es
+fs
+gs
+
+eflags - Zero Flag, Carry fl, sign f, overflow f, direction f, party f & auxiliary cf (PF & AF), interrupt flag, trap flag
+eip - extended instruction pointer. Stores ram address with next machine instruction
+
+|-------------32bits-------------|	fairly (spravedlivo) for EAX,EBX,ECX,EDX
+|---------------EAX--------------|	
+|-----16b--------|------AX-------|	AX - as EAX but instead of 32bist has only 16
+|-----16b--------|--AH---|--AL---|	AH - A High, AL - A Low, 8bits area each
+
+
+
+
+# FUN
+mov eax, ebx	; uses 2 bytes ram
+mov eax, 5	; 5 bytes (1 for mov eax & 4 (32bits) for number 5)
+
+# four different Machine Code (mc) for one "mov" mnemonic
+mov eax, 2
+mov eax, [x]
+mov [x], eax
+mov [x], al
+
+# same mc for mov command
+mov eax, 2
+mov eax, x
+
+
+

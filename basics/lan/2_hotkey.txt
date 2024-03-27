@@ -1,0 +1,68 @@
+
+########################
+# simulate networks:
+########################
+
+1. Packet tracer (free, win/linux)
+2. GNS3 simulator
+
+
+########################
+# connection types
+########################
+
+1. GUI
+2. Cisco SDM (web interface)
+3. CLI (command line interface)
+4. via console cable
+5. telnet/ssh
+
+ 1 - not our method, 2 - laggy
+
+# see Console Cable (4) at "1_firstLaunch.txt"
+# from here:
+
+# see avaliable commands
+ROUTER1>?
+
+# root
+ROUTER1>enable
+ROUTER1#
+
+# see current settings
+ROUTER1#show running-config
+# "show running-config" may be shorten to "sh run"
+
+# see command possibilities
+ROUTER1#show ?
+
+# hot keys
+Ctrl+A set cursor to the left (at line begin)
+Ctrl+E set cursor to the right
+Ctrl+W delete previous word
+Ctrl+U delete whole line
+Ctrl+C exit configure mode
+Ctrl+Z apply current command and exit configure mode
+Ctrl+Shift+6 stop long process (so called "escape sequence")
+
+# output filtration
+# use | (pipe) symbol, filter and key word
+# filters:
+begin - show all lines from where the key word (kw) appears first
+section - show onfig file section in which kw appears
+include - show lines where kw present
+exclude - show lines where kw NOT present
+# example:
+ROUTER1#show running-config | include ip
+ROUTER1#sh run | exclude ip
+
+# global configure mode (gcm)
+# is the main mode
+# allows to modify device settings
+# to get:
+ROUTER1#configure terminal
+ROUTER1(config)#
+# but in gcm can't use commands like:
+sh run, ping, etc.
+# but with "do" - can
+ROUTER1(config)#do sh run

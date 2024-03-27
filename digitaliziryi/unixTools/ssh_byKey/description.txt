@@ -1,0 +1,19 @@
+# generate pair
+ssh-keygen
+# check keys
+vim ~/.ssh/id_rsa
+vim ~/.ssh/id_rsa.pab
+
+# copy key to server
+ssh-copy user@ip
+
+# and login without password
+ssh user@ip
+
+
+# for safety purpose disable auth by pass
+sudo vim /etc/ssh/sshd_config
+PasswordAuthentication yes
+change to "no"
+# and restart ssh
+sudo service ssh restart

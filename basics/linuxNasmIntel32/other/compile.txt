@@ -1,0 +1,19 @@
+# 01helloworld.asm
+# to compile:
+nasm -f elf32 -o helloworld.o 01helloworld.asm
+# make it executable;
+ld -m elf_i386 -o helloworld helloworld.o
+
+
+# 02helloworld.asm
+# to compile:
+?
+
+
+# 03hello.asm
+# all assembler:
+nasm -f elf 03hello.asm
+# then (componovshic):
+ld 03hello.o -o 03hello
+
+

@@ -1,0 +1,30 @@
+# process monitoring
+
+# guide
+https://www.youtube.com/watch?v=21yn_RAtPA8&list=PLAk6CfuV7hyqHyQVHZMQRihAfebXpxn2O&index=3&ab_channel=%D0%94%D0%B8%D0%B4%D0%B6%D0%B8%D1%82%D0%B0%D0%BB%D0%B8%D0%B7%D0%B8%D1%80%D1%83%D0%B9%21
+
+# install
+sduo apt install htop
+
+# commands
+t	tree "command"
+m	sort by Memory
+p	sort by Processor
+/procNm	find process by name
+\	reverce filter
+\+esc	disable reverce filter
+u+user	show particular user processes
+k	kill process
+e	shows environment variables that are around process
+"space"	select multiple lines
+U	reset selection
+F2	settings
+
+
+# check what files uses process:
+sudo apt install lsof
+
+# then find process in htop
+l	shows files used by the process
+
+

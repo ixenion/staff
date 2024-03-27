@@ -1,0 +1,64 @@
+# i have 2 git repositories. How can i add one to other?
+
+If you have two separate Git repositories and you want to add one repository to another as a submodule, you can follow these steps:
+
+1. Navigate to the root directory of the repository where you want to add the other repository as a submodule.
+
+2. Use the following Git command to add the other repository as a submodule:
+      git submodule add <repository_url> <submodule_directory_name>
+   
+   Replace <repository_url> with the URL of the Git repository you want to add as a submodule, and <submodule_directory_name> with a name for the directory where the submodule will be stored.
+
+3. Commit the changes to the main repository by running:
+      git add .
+   git commit -m "Added submodule from <repository_url>"
+   
+
+4. Push the changes to the remote repository if needed:
+      git push origin main
+   
+
+5. To update the submodule to the latest revision from the remote repository, navigate into the submodule directory and run:
+      git pull origin main
+   
+
+By following these steps, you can add one Git repository as a submodule to another Git repository. This allows you to include the other repository within your main repository as a separate entity, making it easier to manage shared code or dependencies.
+
+
+
+
+Im trying to add git submodule by:
+"git submodule add http://gitlab.lis/AC/qcsuper qcsuper"
+And got error: 'utils/diag/qcsuper' already exists in the index.
+How can i remove it from the "index"?
+
+To remove a directory that is conflicting with the addition of a submodule, you can follow these steps to remove it from the index:
+
+1. Check the Status of the Submodule:
+   First, check the status of the submodule and the conflicting directory using the following command:
+      git status
+   
+
+2. Remove the Directory from the Index:
+   To remove the conflicting directory (utils/diag/qcsuper) from the index, you can use the following command:
+      git rm -r utils/diag/qcsuper
+   
+
+3. Commit the Changes:
+   After removing the conflicting directory from the index, you need to commit the removal changes. Use the following commands:
+      git commit -m "Remove existing directory conflicting with submodule addition"
+   
+
+4. Add the Submodule:
+   Now that the conflicting directory has been removed from the index, you can try adding the submodule again:
+      git submodule add http://gitlab.lis/AC/qcsuper utils/diag/qcsuper
+   
+
+5. Commit the Submodule Addition:
+   Once the submodule is added successfully, commit the changes to include the submodule addition:
+      git add .
+   git commit -m "Added qcsuper submodule"
+   git push origin main
+   
+
+By following these steps, you should be able to remove the conflicting directory from the index and successfully add the submodule without any errors. Remember to check the status of your repository throughout the process to ensure that the changes are being applied correctly.`

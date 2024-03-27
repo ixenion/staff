@@ -1,0 +1,171 @@
+##########
+# TOPICS #
+##########
+
+1. Performance improved
+2. Type hinting improvements
+3. DX (Developer Experience) sugar
+
+
+
+
+#########################
+#                       #
+# Performance improved #
+#                       #
+#########################
+
+1. Performance and efficiency of cpython
+   were improved.
+
+   a. Subinterpretator was implemented;
+   b. Memory usage improved;
+   c. Inline comprehention speed improved;
+   d. Asyncio speed improved (up to 75%);
+
+
+
+##############################
+#                            #
+# Type hinting improvements #
+#                            #
+##############################
+
+1. **kwargs.
+
+   Example:
+
+from typing import TypedDict, Unpack
+
+class Movie(TypedDict):
+    name: str
+    year: int
+
+class foo(**kwargs: Unpack[Movie]):
+    print(kwargs)
+
+
+2.SIMPLIFIED GENERICS
+   
+   How it was in 3.11:
+
+from typing import TypeVar
+
+T = TypeVar("T")
+
+def get_first(lst: list[T]) -> T:
+    return lst[0]
+
+first_element = get_first([10, 20])
+print(first_element.upper())        # pyright - type error
+
+   Python3.12 (simplified)
+
+def get_first[T](lst: list[T]) -> T:
+    return lst[0]
+
+first_element = get_first([10, 20])
+print(first_element.upper())        # pyright - type error
+
+
+   Example2
+
+def flip[T, V](values: tuple[T, V]) -> tuple[V, T]:
+    return (values[1], va;ues[0])
+
+
+    Example3: class generic
+
+class SomeClass[T, V]:
+    def __init__(self):
+        ...
+    def flip(self, values: tuple[T, V]) -> tuple[V, T]:
+        return (values[1], va;ues[0])
+
+some_instance = SomeClass[str, int]()
+some_instance.flip(("hello", 10))
+
+
+3. TYPE ALIAS
+
+type RUB = float
+type USD = float
+
+def rub_to_usd(rub: RUB) -> USD:
+    return USD(rub * 0.01)
+
+salary = 10
+print(rub_to_usd(RUB(salary)))
+
+
+###################################
+#                                 #
+# DX (Developer Experience) sugar #
+#                                 #
+###################################
+
+1. F-STRINGs.
+
+   In python3.11 these would return error,
+   But now it works:
+
+print(f"Hello, {",".join(names)}")
+print(f"Hello, {'\n'.join(names)}")
+print(f"Hello, {'\n'.join([
+    'John',
+    'Peter',
+    'Ann'
+])}")
+
+
+2. Improoved Errors messages
+   
+   Now it suggests you to for example import module
+   If you forget to.
+
+
+3. PROFILER IMPROVED
+
+   'bash perf' shows what exactly makes you programm slow.
+
+
+4. NEW DECORATOR '@OVERRIDE'
+
+   Example1:
+
+from typing import override
+
+class Parent:
+    def make_something_great(self, arg: int) -> None:
+        print(arg)
+
+class Child(Parent):
+    @override
+    def make_something_great(self, arg: int) -> None:
+        print("wow!", arg)
+
+
+5. Path.walk
+
+from pathlib import Path
+
+for path, directories, files in Path('.').walk():
+    print(paht, directories, files)
+
+
+6. CLI FOR UUID
+
+$python3.12 -m uuid
+ac51955f-62eb-4449-af43-6551404cc6ef
+
+
+7. SPLIT DATA TO BATCHES
+
+   Example1:
+
+form itertools import batched
+
+for batch in batched([1,2,3,4,5,6,7], 3):
+    print(batch)
+    
+    

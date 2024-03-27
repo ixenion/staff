@@ -1,0 +1,199 @@
+
+
+########################
+# telnet access setup (5)
+########################
+
+# connect console cable
+# turn on (plug in power) router
+ROUTER1>enablle
+ROUTER1#configure terminal
+# set FastEthernet interface configuration mode (icm)
+ROUTER1(config)#interface fa0/0
+ROUTER1(config-if)#
+# instead of FastEthernet may be gigabitEthrnet
+# to configure it:
+ROUTER1#configure terminal
+ROUTER1(config)#interface gigabitEthernet 0/0
+ROUTER1(config-if)#
+
+# to check Ethernet type:
+ROUTER1#show ip interface brief
+Interface	    IP-Address	OK? Method Status	Protocol
+GigabitEthernet0/0  192.x.x.1   YES DHCP   up		up
+
+# by default all interfaces are down (administratively down)
+# up it:
+ROUTER1(config-if)#no shutdown
+# set up ip address:
+ROUTER1(config-if)#ip address 192.168.1.1 255.255.255.0
+
+# connecting...
+# need crossover cable
+# (novadays use crsovr cable not nessesary - all cards work both reseive and transmit
+# but still encounter some routers which ports are down when use inproper cable)
+
+# to connect set up desktop static ip address
+# windows 10 (7,8?):
+
+# set static ip with cli
+
+ > netsh interface ip set address name="eth0" static 192.168.1.2 255.255.255.0 192.168.1.1
+# to find address name:
+ > ipconfig /all
+# search for "Ethernet adapter eth0" or similar
+# set DNS:
+ > netsh interface ip set set dns name="eth0" static 192.168.1.1
+# 192.168.1.1 here is dns server address of the network (router?)
+# or set alternate dns server
+ > netsh interface ip add dns name="eth0" 8.8.8.8 index=2
+# make shure to hange 8.8.8.8 with an alternate DNS server address
+
+# microsoft is in the process of retiring netsh from Win10, as such you should
+start using the "NetTCPIP" networking module available in PowerShell instead.
+
+# assign static IP address using Powershell
+
+# to view current network configuration
+ > Get-NetIPConfiguration
+# assign static IP
+ > New-NetIPAddress -InterfaceIndex 4 -IPAddress 192.168.1.2 -PrefixLength 24 -DefaultGateway 192.168.1.1
+# interface index - index ot internet interface (need change)
+# prefix length - mask bits
+# assign dns serv address
+ > Set-DnsClientServerAddress -InterfaceIndex 4 -ServerAddress 192.168.1.1
+# assign multiple dns serv if needed
+ > Set-DnsClientServerAddress -InterfaceIndex 4 -ServerAddress 192.168.1.1, 8.8.8.8
+
+
+# linux static IP
+# using ifconfig (deprecated)
+
+# set ip address
+$ifconfig eth0 192.168.1.2 netmask 255.255.255.0 up
+# set the gateway
+$route add default gw 192.168.1.1
+# set dns server
+echo "nameserver 1.1.1.1" > /etc/resolv.conf
+# 1.1.1.1 - cloudflare dns (may use 192.168.1.1 ? )
+# test
+$ping 192.168.1.1
+
+# linux usng ip and netplan
+
+# show urrent ip
+$ ip addr show
+# bring interface up/down using ip
+$ ip link set eth0 up/down
+# showing routng
+$ ip route show
+# edit network info old sys
+$ vim /etc/networking/*.yaml
+# edit networking info modern sys
+$ vim /etc/netplan/*.yaml
+# and apply it by
+$ netplan apply
+
+
+# try to connect from PC to router
+# connect crossover (or usual if modern) cable
+ > ping 192.168.1.1 (should present)
+ > telnet 192.168.1.1
+ [Connection to 192.168.1.1 clossed by foreign host]
+# fail to connect
+# need to set password
+
+# set up user passwd (deprecated)
+ROUTER1(config)#line vty 0 4
+ROUTER1(config-line)#password cisco
+ROUTER1(config)#login
+# vt - virtual terminal
+# 0 4 - are the five user's vt=telnet sessions
+
+# "enable" mode password setup
+ROUTER1>enable
+ROUTER1#configure terminal
+ROUTER1(config)#enable secret test
+# "secret" - hashed password stores into router
+# "password" - unhashed password stores into router (unsecure)
+# if password set with "password" option (not hashed)
+# may hash it by
+ROUTER1(config)#service password-encryption
+# so the password into the config will be encrypted (hashed)
+
+# set up user passwd (modern) (instead ov vty)
+ROUTER1(config)#aaa new-model
+ROUTER1(config)#username admin secret 1234
+# aaa new-model - activate new aaa (authentication, authrization, accounting) model
+# nesseccary to be able to use RADIUS or TACACS server for authentication
+# if it's not setup will be used local user database instead
+
+
+# console cable port password setup
+ROUTER1(config)#line console 0
+ROUTER1(config-line)#login
+ROUTER1(config-line)#password cisco
+
+
+# Privelege level
+
+# 0-15
+# 0 - commands: disable, enable, exit, help, logout
+# 1 - user mode commands ( > )
+# 2-14 custom levels (setting manually)
+# 15 - root (enable)
+
+# set default level when auth with telnet
+ROUTER1(config)#line vty 0 4
+ROUTER1(config-line)#privelege level 15
+# example
+PC > telnet 192.168.1.1
+Trying 192.168.1.1 ...Open
+
+User Access Verifiation
+
+Username:admin
+Password:1234
+ROUTER1#
+# after "telnet 192.168.1.1" immideatly get to ROUTER1# (enable mode)
+
+# set custom priv level
+
+# set user user and its priv level
+ROUTER1(config)#username pooruser privelege 2 secret poorpass
+# set allowed ccommand for that user
+ROUTER1(config)#privelege exec level2 show running-config
+# set pass to enter "enable" mode with this level (level 2)
+ROUTER1(config)#enable secret level 2 l2poorpass
+
+# example
+PC > telnet 192.168.1.1
+Trying 192.168.1.1 ...Open
+
+User Access Verifiation
+
+Username: poor
+Password: poorpass
+ROUTER1>enable 2
+Password: l2poorpass
+ROUTER1#show run?
+running-config
+ROUTER1#show run
+
+
+########################
+# ssh access setup (5)
+########################
+
+# telnet - not secure protocol
+# transmits passwd and other data not encrypted
+# with wireshark may capture passwd and data
+
+# set up ssh and disable telnet
+ROUTER1(config)#hostname RO
+RO(config)#ip domain-name cisco-dmn
+RO(config)#crypto key generate rsa
+RO(config)#line vty 0 4
+RO(config-line)#transport input ssh
+# to save ALL manipulations with router (save current configuration)
+RO(config)#write memory

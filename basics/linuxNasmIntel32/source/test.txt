@@ -1,0 +1,58 @@
+
+explore:     file format elf32-i386
+
+
+Disassembly of section .text:
+
+08049000 <_start>:
+ 8049000:	90                   	nop
+ 8049001:	90                   	nop
+ 8049002:	90                   	nop
+ 8049003:	90                   	nop
+ 8049004:	90                   	nop
+ 8049005:	90                   	nop
+ 8049006:	90                   	nop
+ 8049007:	90                   	nop
+ 8049008:	c7 05 14 a0 04 08 0a 	movl   $0xa,0x804a014
+ 804900f:	00 00 00 
+ 8049012:	6a 05                	push   $0x5
+ 8049014:	68 00 80 04 08       	push   $0x8048000
+ 8049019:	6a 01                	push   $0x1
+ 804901b:	6a 04                	push   $0x4
+ 804901d:	58                   	pop    %eax
+ 804901e:	5b                   	pop    %ebx
+ 804901f:	59                   	pop    %ecx
+ 8049020:	5a                   	pop    %edx
+ 8049021:	cd 80                	int    $0x80
+ 8049023:	83 f8 00             	cmp    $0x0,%eax
+ 8049026:	79 13                	jns    804903b <success>
+
+08049028 <error>:
+ 8049028:	6a 06                	push   $0x6
+ 804902a:	68 00 a0 04 08       	push   $0x804a000
+ 804902f:	6a 01                	push   $0x1
+ 8049031:	6a 04                	push   $0x4
+ 8049033:	58                   	pop    %eax
+ 8049034:	5b                   	pop    %ebx
+ 8049035:	59                   	pop    %ecx
+ 8049036:	5a                   	pop    %edx
+ 8049037:	cd 80                	int    $0x80
+ 8049039:	eb 11                	jmp    804904c <exit>
+
+0804903b <success>:
+ 804903b:	6a 08                	push   $0x8
+ 804903d:	68 06 a0 04 08       	push   $0x804a006
+ 8049042:	6a 01                	push   $0x1
+ 8049044:	6a 04                	push   $0x4
+ 8049046:	58                   	pop    %eax
+ 8049047:	5b                   	pop    %ebx
+ 8049048:	59                   	pop    %ecx
+ 8049049:	5a                   	pop    %edx
+ 804904a:	cd 80                	int    $0x80
+
+0804904c <exit>:
+ 804904c:	6a 00                	push   $0x0
+ 804904e:	6a 01                	push   $0x1
+ 8049050:	58                   	pop    %eax
+ 8049051:	5b                   	pop    %ebx
+ 8049052:	cd 80                	int    $0x80

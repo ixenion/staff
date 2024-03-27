@@ -1,0 +1,18 @@
+# install neo-vim
+sudo apt install neovim
+
+# install python LSP (Language Server Protocol) (responsible for autocomplete, goToDefenition, etc)
+npm install -g pyright
+
+# create config dir
+mkdir -p ~/.config/nvim
+
+# configure config
+nvim ~/.config/nvim/init.vim
+
+# install nvim plagin manager
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
+# rest instruction:
+https://www.youtube.com/watch?v=PA7zZNJXJEk
+

@@ -1,0 +1,4 @@
+# After using installation script for example:
+
+git config --global --unset credential.helper
+git config --global --unset user.name

@@ -1,0 +1,117 @@
+
+
+# routing tables are accembled automatically
+# contrarry to static routing where routing tables are writen manually
+
+# dynamic routing protocols also maintain trafi balance
+
+
+# 2 types of dynamic routing prtocols:
+# external & internal
+# external - EGP (Exterior Gateway Protocol)
+# internal - IGP (Interir Gateway Protocol)
+
+# EGP used inside autonomous sytem (AS) between routers
+# IGP - between AS'
+
+# EGP are consists of Distane-vector (RIP, EIGRP) & Link State (OSPF, IS-IS) protocol types
+# RIP, IGRP - old protocols
+# Packe Traces has no IS-IS
+
+
+# Distane-vector & Link State differences
+# DV has Routing tables, LS has Topology tables
+# process of determining best way are differ
+# DS knows only neighbors, LS have the foggiest about entire network
+
+# if there are some routing protocols simultaneusly
+# choosed only one according Administrative Distance (AD ./docs/administDist.txt)
+
+
+########################
+# OSPF
+########################
+
+# Link State protocol
+OSPFv2 only IPv4
+OSPFv3 IPv4/IPv6
+
+
+# 8 part OSPF
+
+# 1. nothing happen, all quiet
+     Router state - DOWN
+
+# 2. the router start send hello packets at multicast 224.0.0.5 from all interfaces
+     TTL = 1
+     Router state - INIT
+
+# Hello packet contains:
+Router ID 1.1.1.1
+Hello interval 10
+Dead interval 40
+Neighbors Null
+Area ID 0
+Router priority
+DR & BDR addresses
+authentiation password
+
+DR - Designated router (vydelenny marshrutizator)
+BDR - backup Desgnate router
+
+# after that R2 adds R1 to neighbors
+# and R2 sends unicast hello to R1
+
+# 3. friendship. when R1 receive R2 hello, R1 adds R2 as neighbor
+     Router state - TWO WAY
+# then DR & BDR choise happen
+
+# 4. all neighbors determine who is boss. It's router with max Router ID
+     Router state - EXSTART
+
+# 5. router exchange DBD (Data Base Description, or just DD) messg
+     which contains LSDB (Link State Data Base) - it's information about known subnetwork
+     first is boss, then th rest
+     link = intrface
+     LSDB = topology
+     Router state - EXCHANGE
+
+# 6. when router receive DBD from another router
+     they send LSack (LSDB acknowledge)
+     and compare anew received LSDB with LSDB stored
+     and if there are diference - send LSR (Link State Request) each other
+     Router state - LOADING
+
+# LSR consists of:
+192.168.1.0/24
+192.168.20.0/24
+IPs...
+
+# which LSR sender didn't know
+# and he asks to tell him about these networks
+
+# 7. R2 when receive LSR sends LSU (Link State Update)
+     which contain LSA (Link State Advertisement) with all subnetwork information needed
+     and when R1 receive LSU and build his own LSDB get final state
+     Router state - FULL STATE
+     at this stage the router knows entire network
+
+# 8. now OSPF calculates the shortest path to each router
+     with help SPF (Shortest Path First)
+     using metrics (the lower the better way)
+     metric - route cost
+
+     finded path is added to thr route table
+     
+
+
+# if some of links are down
+# the router changes his LSDB and generates LSU with higher number than was before
+# (each LSDB has a number)
+# and hat LSU sent at multicast 224.0.0.5
+# and routers check LSA number received (Rx) with their own LSA stored (St)
+
+
+
+
+

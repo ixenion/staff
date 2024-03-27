@@ -1,0 +1,8 @@
+# install tool
+sudo apt install squashfs-tools-ng
+
+# unpack .img file
+rdsquashfs --unpack-root foo2 --unpack-path / foo.img
+
+# pack it back
+mksquashfs foo foo.img

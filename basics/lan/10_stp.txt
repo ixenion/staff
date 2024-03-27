@@ -1,0 +1,147 @@
+
+########################
+# stp
+########################
+
+root port - leads to the root router/switch
+designated port - from root port
+blocked port - block data transfer
+
+STP port state:
+blocking - only listen BPDU (Bridge Protocol Data Unit)
+listening - receive and transmit bpdu
+learning - listening + modify CAM table
+forwarding - receive/transmit bpdu + operate data
+disabled - "administratively down" condition 
+
+BPDU multicast ethernet address - 01:80:c2:00:00:00
+PAgP - Port Aggregation Protocol (cisco)
+LACP - Link Aggregation Control Protocol (open source)
+
+
+# usual connection goe though all port states
+# which takes about 60 sec
+# to speed it up
+# set port mode to portfast (immideately forwarding state)
+# only edge-port (hosts)
+switch#
+switch(config)#interface fa0/1
+switch(config-if)#switchport mode portfast (?)
+
+# other command
+# enables portfast + mode access + disable PAgP (Port Agregation Protocol)
+switch(onfig-if)#swithport host
+
+# check current stp configuration
+switch#show spanning-tree vlan 2
+ieee - PVST (Per Vlan Spanning Tree)
+rstp - Rapid PVST
+mstp - mstp
+
+
+# make root swith manualy
+switch>enable
+switch#configure terminal
+switch(config)#spanning-tree vlan 3 priority ?
+<0-61440> bridge priority in increments of 4096
+switch(config)#spanning-tree vlan 3 priority 4096
+switch#show spanning-tree vlan 3
+...
+Root ID Priority 4099
+This ridge is the root
+...
+
+# or set dsw1 as root automaticaly
+switch(config)#spanning-tree vlan 3 root primary
+# and spare root switch
+switch(config)#spanning-tree vlan 3 root secondary
+
+# change STP mode:
+switch(config)#spanning-tree mode rapid-pvst
+
+
+# set interface settings to default (drop to default)
+switch(config)#default intrface range fa0/20-24
+# or manualy
+switch(config)#interface range fa0/20-24
+switch(config-if-range)#no description
+switch(config-if-range)#no switchport access vlan
+switch(config-if-range)#no switchport mode
+switch(config-if-range)#shutdown
+
+
+########################
+# etherchannel
+########################
+
+# summarize some interfaces into one interface
+switch(config-if-range)#channel-group 1 mode on
+switch2(config)#interface range fa0/19-23
+switch2(config-if-range)#channel-group 1 mode on
+switch(config)#int port-channel 1
+switch(config-if)#switchport mode trunk
+switch(config-if)#switchport trunk allowed vlan 2.101-104
+# if one (or more) of the 4 links drops
+# this traffic goe through other 3 (or less)
+# working links
+
+########################
+# port security
+########################
+
+# specify a number of allowed MACs
+switch>enable
+switch#configure terminal
+switch(config)#interface GigabitEthernet 0/1
+switch(config-if)#switchport port-security maximum 1
+# means that only 1 MAC mainteined
+
+# specify that particular MAC manualy
+switch(config-if)#switchport port-security mac-address <MAC>
+# or set current on that port MAC
+switch(config-if)#switchport port-security mac-address sticky
+
+# violation rule
+switch(config-if)#switchport port-security violation {shutdown | restrict | protect}
+
+
+########################
+# DHCP snooping
+########################
+
+# protect from dhcp mitm
+
+# turn on dhcp snp protection:
+switch#ip dhcp snooping
+# at which vlans it shoul work:
+switch#ip dhcp snooping vlan 2
+# then set particular trusted dhcp port
+switch(config)#interface fa0/0
+switch(config-if)#ip dhcp snooping trust
+
+
+########################
+# IP Source guard
+########################
+
+# protect from IP spoofing
+switch(config)#interface fa0/23
+switch(config-if)#ip verify source (ip check only for originality)
+switch(config-if)#ip verify source port-security (add mac check for originality)
+
+# port security need dhc snooping on
+
+
+########################
+# dynamic arp inspection
+########################
+
+# protet from arp poisoning
+
+switch#ip arp inspection vlan 2
+switch(config)#interface fa0/23
+switch(config-if)#ip arp inspection trust
+
+
+
+

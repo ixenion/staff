@@ -1,0 +1,2 @@
+sudo apt install iat
+iat file.img file.iso

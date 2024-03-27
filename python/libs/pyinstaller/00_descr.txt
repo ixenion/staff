@@ -1,0 +1,6 @@
+Libray to pack python programms to exe.
+
+Linux:
+sudo apt install python3-dev
+python3.11 -m pip install pyinstaller
+$ pythonstaller --onefile main.py

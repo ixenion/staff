@@ -1,0 +1,236 @@
+
+1. ACL - Access Control List
+2. in & out traffic filtering
+3. NAT
+4. Internet connection using NAt and ACL
+
+
+########################
+# ACL
+########################
+
+# acl - filtration mechanism
+# e.g. set policies (PBR), manage proceses, internet speed limiting
+PBR - Policy-Based Routing
+
+# PBR example:
+# may set up routing from 192.168.1.0/24 via 10.0.1.1 (next hop) to 192.168.3.0/24
+# and from 192.168.2.0/24 via 10.0.2.1 to 192.168.3.0/24
+# while usual routing relies on destination address
+# and all packets sent to one particular next-hop
+
+
+# acl types:
+defolt
+extended
+dynamic
+reflexive
+temp
+
+# defolt acl is recommended to set close to the receiver (destination point)
+# because it checks sender (transmitter) address only
+
+# extended - close to the transmitter
+# cause it checks transmitter address, receiver addr and port.
+# to drop it asap
+
+
+
+########################
+WEB Server access
+########################
+
+# all forbidden that is not allowed
+# filter settings are checked from up to down
+# and when rule match occurs (no matter permit or deny)
+# matching stops and traffic filtering happen via that particular rule
+# wen we protect web server at first need to allow
+# because if "deny ip any any" first - it will block traffi at all
+any - 0.0.0.0 (ip/mask) - means any node
+host - 255.255.255.255 one particular host which ned specify
+
+# configure msk gw
+msk-arbat-gw1>enable
+msk-arbat-gw1#configure terminal
+msk-arbat-gw1(config)#ip access-list extended Server-out
+msk-arbat-gw1(config-ext-nacl)#remark WEB
+# permit tcp - allow tcp traffic, any - any node to the host (one particular address) 172.16.0.2, 80 port addressed
+msk-arbat-gw1(config-ext-nacl)#permit tcp any host 172.16.0.2 eq 80
+
+# hang this settings on the FE0/0.3
+msk-arbat-gw1(config)#int fa0/0.3
+msk-arbat-gw1(config-subif)#ip access-group Servers-out out
+
+# to check above settings
+# from ANY PC browse http://172.16.0.2
+# and page should open
+# but ping 172.6.0.2 don't work...
+# and that happens on al PCs
+
+# beause on all Cisco "deny ip any any" line implicitly added at the end by default
+# that means all ping, ftp, e.t. ges under implicit deny
+
+
+# set full access for admin with 172.16.6.66 fromm "Other" vlan
+msk-arbat-gw1(config)#ip access-list extended Servers-out
+# ftp - another way to connect
+msk-arbat-gw1(config-ext-nacl)#permit tcp host 172.16.6.66 host 172.16.0.2 range 20 ftp
+msk-arbat-gw1(config-ext-nacl)#permit tcp host 172.16.6.66 host 172.16.0.2 eq telnet
+# check
+PC> ftp 172.16.0.2
+Ttrying to cconnect... 172.16.0.2
+Connected to 172.16.0.2
+220-- Welcome to PT Ftp server
+Username:cisco
+331- Username ok, need password
+Password:
+230- Logged in
+(passive mode on)
+ftp>
+
+# that means tp message comes to the router and should leave it at fa0/0.3
+# but from foreign address (e.g. 172.16.3.2) culdn't
+
+
+
+########################
+# File server access
+########################
+
+# give access for all from 172.16.0.0/16 network
+# for file transfer use smb protocol (tcp 445)
+# older - netbios (network basic input output system)
+# which uses whole 3 ports (udp 137 & 138, tcp 139)
+# Also need 20, 21 ftp ports
+# 20 for file transfer and 21 for authorization
+
+# setup ftp 20-21 both internal hosts and external connections
+msk-arbat-gw1(config)#ip access-list extended Servers-out
+msk-arbat-gw1(config-ext-nacl)#permit tcp 172.16.0.0 0.0.255.255 host 172.16.0.3 eq 445
+msk-arbat-gw1(config-ext-nacl)#permit tcp any host 172.16.0.3 range 20 21
+# 0.0.255.255 wildcard mask (backward mask)
+
+
+########################
+# mail server access
+########################
+
+msk-arbat-gw1(config)#ip access-list extended Servers-out
+msk-arbat-gw1(config-ext-nacl)#permit tcp any host 172.16.0.4 eq pop3
+# pop3 is mail protocol (?)
+msk-arbat-gw1(config-ext-nacl)#permit tcp any host 1872.6.0.4 eq smtp
+# smtp is mail protocol
+
+
+########################
+# DNS server
+########################
+
+msk-arbat-gw1(config)#ip access-list extended Servers-out
+msk-arbat-gw1(config-ext-nacl)#permit udp 172.16.0.0 0.0.255.255 host 172.16.0.5 eq 53
+
+
+########################
+# ICMP
+########################
+
+# to fix ping
+msk-arbat-gw1(config-ext-nacl)#1 permit icmp any any
+# "1" means place that articular line at first position in running config
+# but this doesn't work into PT
+# need place it manualy by rewritting run conf
+
+msk-arbat-gw1#show run
+...
+
+# take all output and place it after thise lines:
+# disable urrent list
+msk-arbat-gw1(config)#no ip access-list extended Servers-out
+msk-arbat-gw1(config)#ip access-list extended Servers-out
+msk-arbat-gw1(config-ext-nacl)#permit icmp any any
+remark WEB
+permit tcp any host 172.16.0.2 eq www
+permit tcp host 172.16.6.66 host 172.16.0.2 range 20 ftp
+permit tcp host 172.16.6.66 host 172.16.0.2 eq telnet
+remark FILE
+...
+
+msk-arbat-gw1(config)#ip access-list resequence Servers-out 10 10
+
+# at that point admin have acess only to the web server
+# need to get access to all network
+
+
+########################
+# "Other" network
+########################
+
+msk-arbat-gw1(config)#ip acess-list extended Other-in
+msk-arbat-gw1(config-ext-nacl)#remark IAM
+msk-arbat-gw1(config-ext-nacl)#permit ip host 172.16.6.61 any
+msk-arbat-gw1(config-ext-nacl)#remark ADMIN
+msk-arbat-gw1(config-ext-nacl)#permit ip host 172.16.6.66 any
+
+msk-arbat-gw1(config)#int fa0/0.104
+msk-arbat-gw1(config-subif)#ip access-group Other-in in
+# all above means that all packets from x.x.x.61 or x.x.x.66 host are allowed to be transmit whenever they goes
+# other guests are allowed nothing but access to the internet
+
+
+########################
+# managment network
+########################
+
+msk-arbat-gw1(config)#ip access-list extended Management-out
+msk-arbat-gw1(config-ext-nacl)#remark IAM
+msk-arbat-gw1(config-ext-nacl)#permit ip host 172.16.6.61 172.16.1.0 0.0.0.255
+msk-arbat-gw1(config-ext-nacl)#remark ADMIN
+msk-arbat-gw1(config-ext-nacl)#permit ip host 172.6.6.66 172.16.1.0 0.0.0.255
+msk-arbat-gw1(config)#int fa0/0.2
+msk-arbat-gw1(config-subif)#ip access-group Management-out out
+
+
+########################
+# wildcard mask
+########################
+
+# usual mask:
+172	 16	  2	   4	    | ip address, decimal
+10101100 00010000 00000010 00000100 | ip address, bits
+11111111 11111111 11111111 11111100 | mask, bits
+255	 255	  255	   252	    | mask, decimal
+----------------------------------------------------------
+00000100 - subnetwork address	    |
+00000101 - node ip (1)		    | all beyend
+00000110 - node ip (2)		    | is another
+00000111 - broadcast		    | subnetwork
+----------------------------------------------------------
+1 - that part is not changable
+0 - changable
+
+# wildcard
+1 - changable
+0 - not changable
+# used at access lists for filtering
+# for example, to filter 172.16.2.0/24 do
+# ... 172.16.2.0 0.0.0.255
+
+# also wildcard allows summarize addresses under one subnetwork and even sum. subnetworks
+
+# examples:
+172.16.16.0 - 172.16.16.63
+... 172.16.16.0 0.0.0.63
+
+172.16.16.0/24 - 172.16.17.0/24
+... 172.16.16.0 0.0.1.255
+
+172.16.16.0 - 172.16.255.0
+... 172.16.16.0 0.0.255.0	
+
+
+# troubleshooting:
+msk-arbat-gw1#sh ip access-lists nat-inet
+
+# console output:
+# at the end of any rule add "log"
+msk-arbat-gw1(config-ext-nacl)#permit ip host 172.6.6.66 172.16.1.0 0.0.0.255 log

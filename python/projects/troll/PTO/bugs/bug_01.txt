@@ -1,0 +1,8 @@
+# BUG
+# When there is ascii symbols (check and cross) in the terminal
+# Windows cannot properly log this.
+
+# Fixed in v1.0.1
+# Solution
+# Replace ascii check sign with plus  "+" character
+# Replace ascii cross sign with minus "-" character

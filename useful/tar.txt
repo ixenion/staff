@@ -1,0 +1,6 @@
+# tar a folder
+tar -cvf archive.tar /path/tofolder
+
+# untar
+tar -xf archive.tar
+tar -xzf archive.gz

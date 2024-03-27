@@ -1,0 +1,5 @@
+# download tool
+sudo apt install exiftool
+
+# usage
+exiftool main.jpg | grep GPS

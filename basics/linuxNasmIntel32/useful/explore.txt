@@ -1,0 +1,6 @@
+
+see binary:
+$xxd <src>
+
+decompile binary to asm:
+$objdump -d <bin>

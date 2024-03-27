@@ -1,0 +1,5 @@
+conditional compilation
+Linux         $nasm -f elf32 -dOS_LINUX <if.asm>
+FreeBSD       $nasm -f elf32 -dOS_FBSD <if.asm>
+
+ld -m elf_i386 -o <of> <if.o>

@@ -1,0 +1,14 @@
+Clients:
+  pid: 1267
+--
+Notification Clients:
+  pid: 937
+--
+    Type     Id Active Client Session Port Id S  Flags   Format Chn mask  SRate ST Usg CT  G db  L dB  R dB  VS dB   Server FrmCnt  FrmRdy F Underruns  Flushed   Latency
+       S     83     no   1267     929      75 S  0x605 00000001 00000003  48000  1   d  4   -22  -inf  -inf     0  00001770   6000       0 f         0        0   77.80 k
+--
+		1 Clients:
+			  Pid Priority Ctrl Locked client server
+--
+    Active     Id Client Session Port Id  S  Flags   Format Chn mask  SRate Source   Server FrmCnt FrmRdy Sil   Latency
+       yes    143  15794     833     213  A  0x000 00000001 00000010  16000      1 00015900    960      0   n   unavail

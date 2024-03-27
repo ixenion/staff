@@ -1,0 +1,13 @@
+# generate ssh keys
+ssh-keygen
+
+# check keys
+vim ~/.ssh/id_rsa	# private key
+vim ~/.ssh/id_rsa.pub	# public key
+
+# copy key to server
+ssh-copy-id lad@192.168.2.2
+
+# then just auth
+ssh lad@ip
+

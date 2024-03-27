@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package protocol_pb2;
+
+message Protocol {
+  string version = 1;
+  string timestamp = 2;
+  string src = 3;
+  string dst = 4;
+  oneof data {
+    Directive directive = 5;
+    /* Directive_response directive_response = 6; */
+    /* Modem_metrics modem_metrics = 7; */
+    /* Zond_metrics zond_metrics = 8; */
+    /* modem_info now is part of zond_info message */
+    /* Zond_info zond_info = 9; */
+    /* Heartbeat heartbeat = 10; */
+    /* Heartbeat_response heartbeat_response = 11; */
+
+  }
+}
+
+
+message Directive {
+
+  string msg_id = 1;
+  string directive = 2;
+  /* target = ZOND|MODEM */
+  string target = 3;
+  /* map = dictionary */
+  map<string, string> directive_args = 4;
+  /* string directive_args = 4; */
+  string modem_id = 5;
+
+}

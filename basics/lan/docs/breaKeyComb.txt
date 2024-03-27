@@ -1,0 +1,31 @@
+ Standard Break Key Combinations
+Software 	Platform 	Operating System 	Try This
+Hyperterminal 	IBM Compatible 	Windows XP 	Ctrl-Break
+Hyperterminal 	IBM Compatible 	Windows 2000 	Ctrl-Break
+Hyperterminal 	IBM Compatible 	Windows 98 	Ctrl-Break
+Hyperterminal   IBM Compatible  Windows 95      Ctrl-F6-Break
+(version 595160)
+
+Kermit 		Sun Workstation UNIX 		Ctrl-\l
+						Ctrl-\b
+MicroPhone Pro 	IBM Compatible 	Windows 	Ctrl-Break
+Minicom 	IBM Compatible 	Linux 		Ctrl-a f
+ProComm Plus 	IBM Compatible 	DOS or Windows 	Alt-b
+SecureCRT 	IBM Compatible 	Windows 	Ctrl-Break
+Telix 		IBM Compatible 	DOS 		Ctrl-End
+Telnet 		N/A 	N/A 			Ctrl-], then type send brk
+Telnet to Cisco IBM Compatible 	N/A 		Ctrl-]
+Teraterm 	IBM Compatible 	Windows 	Alt-b
+Terminal 	IBM Compatible 	Windows 	Break
+						Ctrl-Break
+Tip 		Sun Workstation UNIX 		Ctrl-], then Break or Ctrl-c
+						~#
+VT 100 Emulation Data General 	N/A 		F16
+Windows NT 	IBM Compatible 	Windows 	Break-F5
+						Shift-F5
+						Shift-6 Shift-4
+						Shift-b (^$B)
+Z-TERMINAL 	Mac 		Apple 		Command-b
+N/A 		Break-Out Box 	N/A 		Connect pin 2 (X-mit) to +V for half a second
+		CiscoToAuxPort 	N/A 		Control-Shft-6, then b
+		IBM Compatible 	N/A 		Ctrl-Break

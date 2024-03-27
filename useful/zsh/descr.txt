@@ -1,0 +1,6 @@
+# instruction:
+https://habr.com/ru/post/516004/
+https://youtu.be/XKsZph6XFqQ?si=8hN8NaULUs39N4Ix
+
+# fix daimond tot shown
+https://github.com/romkatv/powerlevel10k/issues/455

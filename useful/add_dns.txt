@@ -1,0 +1,25 @@
+If you want to assign a custom hostname to a specific IP address on your local Linux system, you can achieve this by editing the /etc/hosts file. The /etc/hosts file is used to map IP addresses to hostnames locally on your system.
+
+To assign the hostname "myserver" to the IP address 10.0.12.12 on your Linux system, you can follow these steps:
+
+1. Open a terminal on your Linux system.
+
+2. Edit the /etc/hosts file using a text editor. You can use any text editor you prefer, such as nano or vi. For example, to edit the file using nano, run the following command with root privileges:
+      sudo nano /etc/hosts
+   
+
+3. In the /etc/hosts file, add a new entry at the end of the file in the following format:
+      10.0.12.12 myserver
+   
+   Replace 10.0.12.12 with the actual IP address of your server and myserver with the hostname you want to assign.
+
+4. Save the changes and exit the text editor.
+
+5. To make sure your system uses the newly added hostname, you can flush your DNS cache by restarting the networking service:
+      sudo systemctl restart network-manager
+   
+   or
+      sudo /etc/init.d/nscd restart
+   
+
+Once you have added the entry in the /etc/hosts file and restarted the networking service, you should be able to access the server with the custom hostname "myserver" instead of using the IP address directly. This mapping is only local to your system and does not affect other systems on the network.

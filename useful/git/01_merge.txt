@@ -1,0 +1,58 @@
+Для слияния веток в Git нужно выполнить следующие шаги:
+
+1. Переключитесь на ту ветку, в которую вы хотите слить изменения другой ветки.
+      git checkout <название_ветки_в_которую_сливаем>
+   
+
+2. Слейте другую ветку с текущей выбранной веткой.
+      git merge <название_ветки_которую_сливаем>
+   
+
+3. Разрешите конфликты, если они возникнут. Git автоматически попытается слить изменения, но если возникнут конфликты, вам придется решить их вручную.
+
+4. После разрешения конфликтов и завершения слияния, необходимо закоммитить изменения.
+      git commit -m "Merge branch <название_ветки_которую_сливаем>"
+   
+
+5. Отправьте изменения на удаленный репозиторий, если это необходимо.
+      git push
+   
+
+Теперь ветки успешно слиты вместе.
+
+############################################
+
+
+
+
+I have error:
+Unmerged paths:
+(use "git add/rm <file>..." as appropriate to mark resolution)
+both modified:   ZondCom_Server.py
+
+
+This error message indicates that there are conflicts that need to be resolved in the file ZondCom_Server.py before you can complete the merge. To resolve these conflicts, you will need to follow these steps:
+
+1. Open the file ZondCom_Server.py in a text editor.
+2. You will see conflict markers in the file that look something like this:
+      <<<<<<< HEAD
+   // your changes
+   =======
+   // changes from the branch you are merging
+   >>>>>>> branch-you-are-merging
+   
+3. You will need to manually resolve the conflicts by editing the file to remove the conflict markers and deciding which changes to keep. Make sure to keep the changes that you want to keep and remove the conflicting changes.
+4. After resolving the conflicts, save the file.
+5. Stage the resolved file for committing:
+      git add ZondCom_Server.py
+   
+6. Once you have resolved all conflicts and staged the file, you can complete the merge by committing the changes:
+      git commit -m "Resolved conflicts in ZondCom_Server.py"
+   
+7. Finally, you can continue the merge process by running:
+      git merge --continue
+   
+
+After following these steps, the conflicts should be resolved, and you can complete the merge of the branches.
+
+

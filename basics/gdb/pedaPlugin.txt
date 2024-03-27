@@ -1,0 +1,35 @@
+
+Download:
+git clone https://github.coom/longld/peda.git ~/peda
+
+install:
+echo "sourcce ~/peda/peda.py" >> ~/.gdbinit
+
+usag:
+$ gdb
+
+
+key features:
+(1) colorize display asm code, registers, memory info
+(2) additional commands:
+	aslr - Show/set aslr settinngs
+	checksec - Checck for varioussecurity options of binary
+	dumpargs - Display argumentss passed to a funtion when stpped at a call instruction
+	dumprop - Dump all ROP gadgets in specific memory range
+	elfheader - Get headers information from debugging ELF file
+	elfsymbol - Get non-debugging symbol information from an ELF file
+	lookup - Search for all addresses/references to addresses which belong to a memory range	
+	patch - patch memory start at an address with string/hexstrinng/int
+	pattern - Generate, search, or write a cyclic pattern to memory
+	procinfo - Display various info from /proc/pid
+	pshow - Show various PEDA options and other settings
+	pset - Set various PEDA options and settings
+	readelf - Get headers information from an ELF file
+	ropgadget - Get common ROP gadgts of binary or library
+	ropsearch - Search for ROP gadgets in memory
+	searchmem|find - Search for a pattern in memory; support regex search
+	shellcode - Generate python exploit code template
+	vmmap - Get virtual mapping address ranges of setion(s) in debugging proess
+	xormem - XOR a memory region with a key
+
+

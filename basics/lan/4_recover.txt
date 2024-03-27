@@ -1,0 +1,55 @@
+
+
+########################
+if password forgotten
+Cisco 2600 router
+########################
+
+# connect wia console cable
+ROUTER>show version
+...
+Configuration register is 0x2102
+
+
+# when "###############" appears
+# send break signal by (depends on software used)
+# with minicom: Ctrl-a f
+# full list at:
+# https://www.cisco.com/c/en/us/support/docs/routers/10000-series-routers/12818-61.html
+# or ./webDocs/breaKeyComb.txt
+
+
+ROUTER>
+!--- The router was just powercycled, and during bootup a !--- break sequence was sent to the router
+...
+
+rommon 2 > confreg 0x2142
+rommon 2 > reset
+...
+#############[OK]
+...
+
+ROUTER>enable
+ROUTER#copy startup-config running-config
+ROUTER#configure terminal
+ROUTER(config)#enable secret <password>
+ROUTER(config)#
+ROUTER#show ip interface brief
+ROUTER#configure terminal
+ROUTER(config)#interface Ethernet0/0
+ROUTER(config-if)#no shutdown
+ROUTER(config-if)#interface BRI0/0
+ROUTER(config-if)#no shutdown
+ROUTER(config-if)#
+ROUTER#copy running-config startup-config
+ROUTER#show version
+...
+Configuration register is 0x2142
+
+ROUTER#configure terminal
+ROUTER(config)#config-register 0x2102
+ROUTER(config)#
+ROUTER#show version
+...
+Configuration register is 0x2142 (will be 0x2102 at next reload)
+ROUTER#write memory

@@ -1,0 +1,4 @@
+sed -e 's;\t;        ;' < chat_processing.py > yourNewFile.py
+
+# or
+:retab

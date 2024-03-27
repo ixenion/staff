@@ -1,0 +1,10 @@
+syntax = "proto3";
+package repeated123;
+
+message SomeWrapper {
+    repeated SomeInner items = 1;
+}
+message SomeInner {
+    string name = 1;
+    int32 age = 2;
+}

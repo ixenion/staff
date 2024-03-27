@@ -1,0 +1,58 @@
+
+# first setup output trunk port of msk-arbat-dsw1 switch
+
+msk-arbat-dsw1>enable
+msk-arbat-dsw1#configure terminal
+msk-arbat-dsw1(config)#interface FastEthernet0/24
+msk-arbat-dsw1(config-if)#description msk-arbat-gw1
+msk-arbat-dsw1(config-if)#switchport mode trunk
+msk-arbat-dsw1(config-it)#switchport trunk allowed vlan 2-3,101-104
+# done
+
+########################
+# then configure gateway
+########################
+
+ROUTER0>enable
+# at first set clock and date
+ROUTER0#clock set 12:34:56 7 august 2018
+# but preferable to distribute time via NTP server
+# any cisco could be NTP server
+
+# change hostname
+ROUTER0#conf t
+ROUTER0#hostname msk-arbat-gw1
+
+# setup the port to msk-arbat-dsw1
+msk-arbat-gw1>enable
+msk-arbat-gw1#conf t
+msk-arbat-gw1(config)#interface FastEthernet0/0
+msk-arbat-gw1(config-if)#no shutdown
+
+# create sub-interface
+msk-arbat-gw1(config)#interface fa0/0.2
+msk-arbat-gw1(config-if)#description Management
+
+# next command means that outcomming frames from that (fa0/0.2) port
+# will be tagged as vlan 2 and
+# incomming messg on FE0/0 with vlan2 tag will be redirected to fa0/0.2
+msk-arbat-gw1(config-if)#encapsulation dot1Q 2
+
+# set IP on that particular subI
+msk-arbat-gw1(config-if)#ip address 172.16.2.1 255.255.255.0
+
+# next - vlan 101
+msk-arbat-gw1(config)#interface FastEthernet0/0.101
+msk-arbat-gw1(config-if)#description PTO
+msk-arbat-gw1(config-if)#encapsulation dot1Q 101
+msk-arbat-gw1(config-if)#ip address 172.16.101.1 255.255.255.0
+# and so on
+
+
+
+
+
+
+
+
+

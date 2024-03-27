@@ -1,0 +1,18 @@
+# transmit large files
+
+# scp disadvantage - it's encrypting files
+
+
+# open particular port on the machine
+# and transfer by tcp
+
+# on the macine, whith contains file
+nc -lp 8888 -q 1 < file_to_transmit.sql	(-q 1 : stop nc right after transmition is done)
+
+# how to reseive file
+nc server_ip 8888 db.sql
+
+# monitor transmition
+watch "du -h db.sql"
+
+

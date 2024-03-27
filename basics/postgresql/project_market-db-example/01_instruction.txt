@@ -1,0 +1,159 @@
+# tutorial
+https://www.youtube.com/watch?v=WpojDncIWOw&ab_channel=%D0%94%D0%B8%D0%B4%D0%B6%D0%B8%D1%82%D0%B0%D0%BB%D0%B8%D0%B7%D0%B8%D1%80%D1%83%D0%B9%21
+
+# create user & DB
+# (check ../01_postgresql_setup.txt)
+
+# Enter database
+psql -h localhost -U arix -d shop
+
+# List actual tables
+\d
+
+#################
+# create tables #
+#################
+
+1. create entity 'customer'
+shop=# create table customer(
+shop(# id serial primary key,
+shop(# name varchar(255),
+shop(# phone varchar(30),
+shop(# email varchar(255),
+shop(# );
+
+serial		means that field 'id' will be unique;
+varchar()	field 'name' will be of type string 255 bytes in length;
+
+# now check DB
+\d
+# check table
+\d customer
+
+2. create entity 'product'
+
+shop=# create table product(
+shop(# id serial primary key,
+shop(# name varchar(255),
+shop(# description text,
+shop(# price integer);
+
+text		huge string;
+integer		integer variable;
+
+3. create entity 'product_photo'
+shop=# create table product_photo(
+shop(# id serial primary key,
+shop(# urll varchar(255),
+shop(# product_id integer references product(id)
+shop(# );
+
+4. create entity 'cart'
+shop=# create table cart(
+shop(# id serial primary key,
+shop(# customer_id integer references customer(id)
+shop(# );
+
+5. create entity 'cart_product'
+shop=# create table cart_product(
+shop(# cart_id integer references cart(id),
+shop(# product_id integer references product(id)
+shop(# );
+
+###############################
+# insert data into the tables #
+###############################
+
+6. inset into 'customer' table
+shop=# insert into customer(name, phone, email) values ('Petya', '89054230221', 'vas@gmail.com');
+
+7. print all content from 'customer' table
+shop=# select * from customer;
+
+8. Fill in 'product' table
+shop=# insert into product (name, description, price) values ('iPhone', 'Cool phone', 100000);
+shop=# insert into product (name, description, price) values ('Apple watch', 'Cool watch', 50000);
+
+9. fill in 'product_photo' table
+shop=# inser into product_photo (url, product_id) values ('iphone_photo', 1);
+
+10. see one particular columt
+shop=# select url from product_photo;
+
+11. Join tables (all left + right which are on the left to)
+shop=# select pp.*, p.name from product_photo pp left join product p on p.id=pp.product_id;
+# Join tables where only left and right have overlap
+shop=# select pp.*, p.name from product_photo pp inner join product p on p.id=pp.product_id;
+
+
+# OPTIONAL (test command 11)
+(11.2) Delete relation ( FOREIGN KEY ) to another table
+shop=# alter table product_photo drop constraint product_photo_product_id_fkey;
+
+(11.3) Add non existed product_photo
+shop=# insert inot product_photo (url, product_id) values ('unknown_photo', 100);
+
+(11.4) Join tables
+shop=# select pp.*, p.name from product_photo pp left join product p on p.id=pp.product_id;
+shop=# select pp.*, p.name from product_photo pp inner join product p on p.id=pp.product_id;
+
+(11.5) Remove row from 'product_photo'
+shop=# delete from product_photo where id=2;
+
+
+12. Update 'product_photo' url
+shop=# update product_photo set url='iphone_image2' where id=1;
+
+13. Fill in cart for first 'customer'
+shop=# insert into cart (customer_id) values (1);
+shop=# insert into cart_product (cart_id, product_id) values (1, 1), (1, 2);
+
+
+##################################3
+
+14. Get customer names with total order amount
+
+a.
+shop=> select c.name, cart.id from customer c left join cart on cart.customer_id=c.id;
+b.
+shop=> select c.name, cart.id from customer c left join cart on cart.customer_id=c.id;
+c.
+shop=> select c.name, cart.id as cart_id from customer c left join cart on cart.customer_id=c.id;
+d.
+shop=> select c.name, cart.id as cart_id, cp.product_id from customer c left join cart on cart.customer_id=c.id left join cart_product cp on cp.cart_id=cart.id;
+e.
+shop=> select c.name, cart.id as cart_id, cp.product_id, p.price from customer c left join cart on cart.customer_id=c.id left join cart_product cp on cp.cart_id=cart.id left join product p on p.id=cp.product_id;
+f. finaly sum
+shop=> select c.name, sum(p.price) from customer c left join cart on cart.customer_id=c.id left join cart_product cp on cp.cart_id=cart.id left join product p on p.id=cp.product_id group by c.name;
+g. replace empty p.price
+shop=> select c.name, coalesce(sum(p.price), 0) as order_sum from customer c left join cart on cart.customer_id=c.id left join cart_product cp on cp.cart_id=cart.id left join product p on p.id=cp.product_id group by c.name;
+
+h. sort by 'order_sum'
+shop=> select c.name, coalesce(sum(p.price), 0) as order_sum from customer c left join cart on cart.customer_id=c.id left join cart_product cp on cp.cart_id=cart.id left join product p on p.id=cp.product_id group by c.name order by order_sum;
+shop=> select c.name, coalesce(sum(p.price), 0) as order_sum from customer c left join cart on cart.customer_id=c.id left join cart_product cp on cp.cart_id=cart.id left join product p on p.id=cp.product_id group by c.name order by order_sum desc;
+
+i. get customers with non zero 'order_sum'
+shop=> select c.name, coalesce(sum(p.price), 0) as order_sum from customer c left join cart on cart.customer_id=c.id left join cart_product cp on cp.cart_id=cart.id left join product p on p.id=cp.product_id group by c.name having sum(p.price)>0;
+
+# HAVING	filters groups
+# WHERE		filters rows
+
+
+15. LIMIT keyword
+
+a. sort by name
+shop=> select * from customer order by name;
+b. solve encoding (Russian) issues
+shop=> select * from customer order by name using ~<~;
+# proper way to solve this issue is to
+# create DB with right encoding
+# see: https://www.youtube.com/watch?v=FLiKTJqyyvs
+
+c. limit output rows
+shop=> select * from customer order by name using limit 1;
+# or
+shop=> select * from customer order by name using ~>~ limit 1;
+
+d. nned one row but second from the top
+shop=> select * from customer order by name using limit 1 offset 1;
+

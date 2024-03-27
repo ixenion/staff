@@ -1,0 +1,25 @@
+2022-05-31T15:58:48.643470-0300 ERROR An error has been caught in function '<module>', process 'MainProcess' (1956), thread 'MainThread' (140059850012480):
+Traceback (most recent call last):
+
+> File "/home/arix/staff/python3/digitaliziryi/loguru/02_decorator.py", line 12, in <module>
+    main()
+    └ <function main at 0x7f623908a9d0>
+
+  File "/home/arix/staff/python3/digitaliziryi/loguru/02_decorator.py", line 10, in main
+    divide(a, b)
+    └ <function divide at 0x7f62393bb040>
+
+NameError: name 'a' is not defined
+2022-05-31T17:11:11.554322-0300 ERROR An error has been caught in function '<module>', process 'MainProcess' (2308), thread 'MainThread' (140308089452352):
+Traceback (most recent call last):
+
+> File "/home/arix/staff/python3/digitaliziryi/loguru/02_decorator.py", line 13, in <module>
+    main()
+    └ <function main at 0x7f9c0541e9d0>
+
+  File "/home/arix/staff/python3/digitaliziryi/loguru/02_decorator.py", line 11, in main
+    divide(a, b)
+    └ <function divide at 0x7f9c0574f040>
+
+NameError: name 'a' is not defined
+{"text": "2022-05-31T17:26:29.100722-0300 ERROR An error has been caught in function '<module>', process 'MainProcess' (2435), thread 'MainThread' (140396215060288):\nTraceback (most recent call last):\n\n> File \"/home/arix/staff/python3/digitaliziryi/loguru/03_jsonLogForParsing.py\", line 14, in <module>\n    main()\n    └ <function main at 0x7fb089f36790>\n\n  File \"/home/arix/staff/python3/digitaliziryi/loguru/03_jsonLogForParsing.py\", line 12, in main\n    divide(1, 0)\n    └ <function divide at 0x7fb08a26f040>\n\n  File \"/home/arix/staff/python3/digitaliziryi/loguru/03_jsonLogForParsing.py\", line 7, in divide\n    return a / b\n           │   └ 0\n           └ 1\n\nZeroDivisionError: division by zero\n", "record": {"elapsed": {"repr": "0:00:00.032835", "seconds": 0.032835}, "exception": {"type": "ZeroDivisionError", "value": "division by zero", "traceback": true}, "extra": {}, "file": {"name": "03_jsonLogForParsing.py", "path": "/home/arix/staff/python3/digitaliziryi/loguru/03_jsonLogForParsing.py"}, "function": "<module>", "level": {"icon": "❌", "name": "ERROR", "no": 40}, "line": 14, "message": "An error has been caught in function '<module>', process 'MainProcess' (2435), thread 'MainThread' (140396215060288):", "module": "03_jsonLogForParsing", "name": "__main__", "process": {"id": 2435, "name": "MainProcess"}, "thread": {"id": 140396215060288, "name": "MainThread"}, "time": {"repr": "2022-05-31 17:26:29.100722-03:00", "timestamp": 1654028789.100722}}}

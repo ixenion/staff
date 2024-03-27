@@ -1,0 +1,7 @@
+// to compile:
+apt install mono-complete
+mcs -out:hello.exe hello.cs
+mono hello.exe
+
+// decompile
+monodis --output=decompiled-hello.txt hello.exe

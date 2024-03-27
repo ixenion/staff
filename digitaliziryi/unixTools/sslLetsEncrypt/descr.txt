@@ -1,0 +1,9 @@
+# create sertificate for web page
+
+# go to
+Get Started -> Cersbot
+# select "Software" and "System"
+# to get instructions
+
+# install nesessary packets
+

@@ -1,0 +1,46 @@
+# tmux is a terminal multiplexer.
+# It lets you switch easily between
+# several programs in one terminal,
+# detach them (they keep running in
+# the background) and reattach them
+# to a different terminal.
+
+# guide
+https://www.youtube.com/watch?v=1Y2CD4WnbP0&list=PLAk6CfuV7hyqHyQVHZMQRihAfebXpxn2O&index=2&ab_channel=%D0%94%D0%B8%D0%B4%D0%B6%D0%B8%D1%82%D0%B0%D0%BB%D0%B8%D0%B7%D0%B8%D1%80%D1%83%D0%B9%21
+
+# install
+sudo apt install tmux
+
+# settings
+nv ~/.tmux.conf
+  # change default C-b to C-q
+  set-option -g prefix C-q
+  # change split screen volume by mouse
+  set -g mouse on
+
+# usage
+# new session
+tmux new-session -s session-name
+# attach to already existing session
+tmux attach -t session-name
+# kill session
+tmux kill-session -t session-name
+
+
+# tmux commands:
+1) create new window
+   C-b + c
+   kill window
+   C-b + &
+2) switch between windows
+   C-b + 0
+   C-b + 1
+3) split window on 2 wertical
+   C-b + %
+   on 2 horizontal
+   C-b + "
+   and switch between them
+   C-b + -> | <-
+4) detouch from tmux session
+   C-b + d
+

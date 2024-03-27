@@ -1,0 +1,3 @@
+# open some .py file
+:CocInstall coc-python
+:CocCommand python.setInterpreter

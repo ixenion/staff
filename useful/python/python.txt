@@ -1,0 +1,7 @@
+# python2
+apt install python
+
+# pip for python2
+# download from
+https://bootstrap.pypa.io/get-pip.py
+python get-pip.py (not working)

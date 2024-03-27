@@ -1,0 +1,77 @@
+#######################
+######## LINKS ########
+#######################
+
+# Datatypes table
+https://www.postgresql.org/docs/current/datatype.html#DATATYPE-TABLE
+
+
+
+######################
+####### BASICS #######
+######################
+
+# Enter DB
+psql -h localhost -U arix -d shop
+
+# Create table
+shop=# create table customer(
+shop(# id serial primary key,
+shop(# name varchar(255),
+shop(# phone varchar(30),
+shop(# email varchar(255),
+shop(# );
+
+# Add field to the table
+db=# alter table <table_name> add column <new_column_name> <data_type>;
+
+# Delete field from the table
+db=# alter table <table_name> drop column <column_name>;
+
+# Delete FOREIGN KEY ( link to other table )
+db=# alter table <table_name> drop constraint <tablename_fieldname_fkey>;
+# example
+shop=# alter table product_photo drop constraint product_photo_product_id_fkey;
+
+
+# Delete table
+db=# drop table <table_name>, <another_table_name>;
+
+# Show table content
+db=# select * from <table_name>;
+db=# select <column_name> from <table_name>;
+
+# Insert values into table
+db=# insert into <table-name> (column1, column2, column3) values ('str', 'str', int);
+# example
+shop=# insert into product (name, description, price) values ('iPhone', 'Cool phone', 100000);
+
+# Delete row from the table
+db=# delete from <table-name> where id=<row-id>;
+# example
+shop=# delete from product_photo where id=2;
+
+
+# Alter (update) row values for table
+# <field-name>='new-value' only where
+# <field-name> is string
+db=# update <table-name> set <field-name>='new-value' where id=<row-id>;
+# example
+shop=# update product_photo set url='iphone_image2' where id=1;
+
+
+# Rename DB (but need to switch to another DB before that)
+ALTER DATABASE db RENAME TO newdb;
+# Delete DB
+drop database db_name;
+# Delete uesr
+DROP ROLE user_name;
+
+
+#######################
+###### SEQUENCES ######
+#######################
+
+\q				exit
+\c <db-name>	enter db
+\d				show table relations

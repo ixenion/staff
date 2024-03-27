@@ -1,0 +1,9 @@
+
+
+# into /24 (255.255.255.0) network
+
+172.16.x.1   - 		    -- Gateway
+172.16.x.2   - 172.16.x.12  -- Network equipment (routers, switches)
+172.16.x.13  - 172.16.x.24  -- Servers
+172.16.x.25  - 172.16.x.220  -- Desctop computers
+172.16.x.221 - 172.16.x.254 -- Printers

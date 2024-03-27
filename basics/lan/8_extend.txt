@@ -1,0 +1,208 @@
+
+# according to ./docs/extention.jpg
+
+
+# to link MSK office to SPb office
+# first setup another FE on msk-arbat-gw1
+# FE0/0 was used to connect msk-arbat-gw1 with internal lan network (to  msk-arbat-dsw1)
+# FE0/1 will be used to connect to the provider and SPb, Kemerovo vlans
+
+# sub interface to SPb
+msk-arbat-gw1(config)#interface FastEthernet0/1.4
+msk-arbat-gw1(config-subif)#description Saint-Petersburg
+msk-arbat-gw1(config-subif)#encapsulation dot1Q 4
+msk-arbat-gw1(config-subif)#ip address 172.16.4.1 255.255.255.252 (couse we dont need 255 ips)
+
+# sub interface to Kemerovo
+msk-arbat-gw1(config)#interface FastEthernet0/1.5
+msk-arbat-gw1(config-subif)#description Kemerovo
+msk-arbat-gw1(config-subif)#encapsulation dot1Q 5
+msk-arbat-gw1(config-subif)#ip address 172.16.5.1 255.255.255.252
+
+
+###
+# Provider side simulation
+###
+switch(config)#interface fa0/1
+switch(config-if)#switchport mode trunk
+switch(config-if)#switchport trunk allowed vlan 4-5
+switch(config-if)#exit
+switch(config)#int fa0/2
+switch(config-if)#switchport mode trunk
+switch(config-if)#switchport trunk allowed vlan 4
+switch(config-if)#exit
+switch(config)#int fa0/3
+switch(config-if)#switchport mode trunk
+switch(config-if)#switchport trunk allowed vlan 5
+
+
+
+########################
+# router ip route entries
+########################
+
+# to see curent
+msk-arbat-gw1#show ip route
+
+C 172.16.3.0/24 is diretly connected, FastEthernet0/0.101
+S 172.16.17.0/24 [1/0] via 172.16.2.2
+
+C - directly connected
+S - static routs, added to the router via "ip route" command
+
+# add static route
+msk-arbat-gw1#ip route 172.16.16.0 255.255.248.0 172.16.2.2
+
+
+
+########################
+# SPb gw setup
+########################
+
+ROUTER1>enable
+ROUTER1#configure terminal
+ROUTER1(config)#hostname spb-vsl-gw1
+spb-vsl-gw1(config)#interface FastEthernet1/0.4
+spb-vsl-gw1(config-if)#description Moscow
+spb-vsl-gw1(config-if)#encapsulation dot1Q 4
+spb-vsl-gw1(config-if)#ip address 172.16.4.2 255.255.255.252
+
+# add LAN
+spb-vsl-gw1(config)#int fa0/0
+spb-vsl-gw1(config-if)#desription LAN
+spb-vsl-gw1(config-if)#ip address 172.16.40.1
+
+# check
+# from msk-arbat-gw1 we can ping this router
+msk-arbat-gw1#ping 172.16.4.2
+Success 5/5
+
+# but can't see 172.16.40.1 (spb-vsl-gw1 fa0/0 internal lan)
+msk-arbat-gw1#ping 172.16.40.1
+Success 0/5
+# because router (msk-arbat-gw1) doesn't know where to send ping:
+msk-arbat-gw1#sh ip route (show ip route)
+C 172.16.0.0/24 is directly connected, FastEthernet0/0.3
+...
+C 172.16.6.0/24 is directly connected, FastEthernet0/0.104
+
+# add new route
+msk-arbat-gw1#configure terminal
+# through spb-vsl-gw1 fa1/0 pass to the fa0/0 (172.16.40.1)
+msk-arbat-gw1(config)#ip route 172.16.40.0 255.255.255.0 172.16.4.2
+# chek changes
+msk-arbat-gw1#sh ip route
+C 172.16.0.0/24 is directly connected, FastEthernet0/0.3
+...
+C 172.16.6.0/24 is directly connected, FastEthernet0/0.104
+S 172.16.40.0/24 [1/0] via 172.16.4.2
+
+# now ping arise
+msk-arbat-gw1#ping 172.16.40.1
+Success 5/5
+
+
+# BUT
+# check route from 172.16.3.3 (msk vlan3 PC)
+# to the  spb-vsl-gw1 fa0/0 (172.16.40.1)
+# doesn't return anything
+# because it follows:
+# 172.16.3.3 -> 172.16.3.1 (gateway of x.x.3.3 PC (mskArbatGw1)) -> 172.16.4.2 (spbGw1 fa1/0) -> 172.16.40.1 (spbGw fa0/0)
+# so it reached target, but spb-vsl-gw1 doesn't know route back to the 172.16.3.0 network
+# so this packets just drops
+spb-vsl-gw1#sh ip route
+Gateway of last resort is not set
+172.16.0.0/24 is variably subnetted, 2 subnets, 2 masks
+C 172.16.4.0/30 is directly connected, FastEthernet... (1/0.4)
+C 172.16.40.0/24 is directly connected, fa... (0/0)
+
+# thus need setup lastHope (default port) port
+spb-vsl-gw1(config)#ip route 0.0.0.0 0.0.0.0 172.16.4.1 (to the msk-arbat-gw1 fa0/1.4)
+
+
+########################
+# ozerki
+########################
+
+spb-vsl-gw1(config)#interface fa1/1
+spb-vsl-gw1(config-if)#description Ozerki
+spb-vsl-gw1(config-if)#ip address 172.16.4.5 255.255.255.252
+# setup route from spb-vsl-gw1 router to spb-ozerki lan
+spb-vsl-gw1(config)#ip route 172.16.50.0 255.255.255.0 172.16.4.6
+# 172.16.4.6 is spb-ozerki-gw1 IP which connected to spb-vsl-gw1
+
+Switch(config)#hostname spb-ozerki-gw1
+spb-ozerki-gw1(config)#interface fa0/24
+spb-ozerki-gw1(config-if)#no swithdown
+spb-ozerki-gw1(config-if)#ip address 172.16.4.6 255.255.255.252
+
+# check connection
+spb-ozerki-gw1#ping 172.16.4.5 (spb-vsl-gw1)
+Success 4/5
+
+# setup lan
+# crate vlan
+spb-ozerki-gw1(config)#vlan 2
+spb-ozerki-gw1(config-vlan)#name LAN
+spb-ozerki-gw1(config-vlan)#exit
+spb-ozerki-gw1(config)#interface vlan 2
+spb-ozerki-gw1(config-if)#description LAN
+
+spb-ozerki-gw1(config-if)#ip address 172.16.50.1 255.255.255.0
+spb-ozerki-gw1(config)#interface FastEthernet0/1
+spb-ozerki-gw1(config-if)#description 123
+spb-ozerki-gw1(config-if)#switchport mode access
+spb-ozerki-gw1(config-if)#switchport access vlan 2
+
+# to make L3 switch work like router
+spb-ozerki-gw1(config)#ip routing
+
+# defolt route
+spb-ozerki-gw1(config)#ip route 0.0.0.0 0.0.0.0 172.16.4.5
+spb-ozerki-gw1#ping 172.16.40.1
+Success 5/5
+
+# BUT
+spb-ozerki-gw1(config)#ping 172.16.3.1
+Success 0/5
+# again because there is no route
+
+# tool for finding rough (approximal) problem placement - traceroute:
+spb-ozerki-gw1#traceroute 172.16.3.1
+Type escape sequence to abort.
+Tracing the route to 172.16.3.1
+1 172.16.4.5 4 msec 2 msec 5 msec
+2 ***
+3 ***
+4 *
+# so there is echo-responce from spb-vsl-gw1 and nothing more
+# check route table on msk-arbat-gw1
+msk-arbat-gw1#sh ip rou
+...
+S 172.16.40.0/24 [1/0] via 172.16.4.2
+# but there is no 172.16.50.0/24
+# add it							      |  # aggregation
+msk-arbat-gw1(config)#ip route 172.16.50.0 255.255.255.0 172.16.4.2   |  msk-arbat-gw1(config)#no ip route 172.16.16.0 255.255.255.0 172								      |  .16.4.2
+								      |  msk-arbat-gw1(config)#ip route 172.16.16.0 255.255.248.0 172.16								      |  .4.2
+
+
+# check
+msk-arbat-gw1#ping 172.16.50.1
+Success 5/5
+# but still cant't spb-ozerki-gw1#ping 172.16.3.1
+# but it will work if:
+spb-ozerki-gw1#ping
+...
+Extended commands [n]:y
+Source address or interface: ping 172.16.50.1
+...
+Sucess 5/5
+
+# and even from PC 172.16.50.26#ping 172.16.3.1 will work
+
+# so to resolve that do:
+spb-ozerki-gw1(config)#ip route 172.16.4.4 255.255.255.252 172.16.4.2
+spb-ozerki-gw1#ping 172.16.3.1
+Success 5/5
+
+

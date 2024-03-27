@@ -1,0 +1,114 @@
+# install:
+sudo apt install gpg
+
+# generate keys
+gpg --full-gen-key
+Kind of key > RSA
+Keysize		> 4096
+Lifetime	> 0			# (endless)
+Is correct	> y
+# then params por signing
+Real name	> Marc Rebell
+Email		> some@gmail.com
+Comment		> My Keys!
+(O)kay		> o
+# enter pathphrase
+passphrase:	> 123456
+# we need to generate a lot of random bytes. It's a good idea to perform
+# some other action (type on keyboard, move mouse, utilize the disk)
+# during the prime generation; this gives the random number generator
+# a better chance to gain enough entropy.
+
+# set up gpg
+nvim ~/.gnupg/gpg.conf
+echo "keyid-format 0xlong
+> throw-keyids
+> no-emit-version
+> no-comments" > ~/.gnupg/gpg.conf
+
+# check public keys
+$ gpg -k
+			#	  key id	 #
+pub rsa4096/0x0A9C26BF7FCAC71F 2021-10-12 [SC]
+
+# check private key
+$ gpg -K
+
+sec ...
+
+
+#########
+# USAGE #
+#########
+
+# create file
+$ echo "Hello world!" > /tmp/file.txt
+# cypher file
+$ gpg -e -a -r 0x0A9C26BF7FCAC71F /tmp/file.txt
+-e encrypt
+-a ascii
+-r key
+# or you can use email
+$ gpg -e -a -r some@gmail.com /tmp/file.txt
+# output - /tmp/file.txt.asc
+
+# decypher
+$ gpg -d -o file.txt file.txt.asc
+# here you need to enter passphrase
+
+
+# export public gpg key as binary
+$ gpg --export some@gmail.com > public.gpg
+# export public gpg key as ascii
+$ gpg --export -a some@gmail.com > public.gpg
+# export private gpg key as ascii
+$ gpg --export-secret-key -a some@gmail.com > secret.gpg
+
+# remove keys from machine (private first!)
+$ gpg --delete-secret-keys some@gmail.com
+$ gpg --delete-keys some@gmail.com
+
+# import keys
+$ gpg --import public.gpg
+$ gpg --import secret.gpg
+
+
+
+########
+# PASS # 
+########
+
+# manage passwords
+# "pass" utilises gpg
+
+# installation:
+$ sudo apt install pass
+
+# initialise password storage
+# as id can use mail
+$ pass init some@gmail.com
+
+# save password
+$ pass insert Email/gmail.com
+
+# check entries
+$ pass
+
+# see saved password
+$ pass Email/gmail.com
+
+# store multiline (multiple passwords in one storage)
+$ pass insert Social/vk -m
+login: someMail@...
+password: 123321
+Ctrl+Z
+
+
+# generate passwords. 15 - pass length
+$ pass generate  Email/mail.ru 15
+
+# delete password
+$ pass rm Email/mail.ru
+
+# as all stored in dir ~/.password-store
+# we can push it on gitlab

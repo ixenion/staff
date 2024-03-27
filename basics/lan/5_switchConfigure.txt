@@ -1,0 +1,171 @@
+
+# accordind to ./docs/scheme.png
+# setting up switches
+
+# connet to the switch via console cable
+
+
+########################
+# sw3 access
+########################
+
+SWITCH1>enable
+# change hostname:
+SWITCH1#configure terminal
+SWITCH1(config)#hostname msk-arbat-asw3
+msk-arbat-asw3(config)#
+
+# setup access ports (end ports, to the clients)
+msk-arbat-asw3(config)#interface FastEthernet0/1
+msk-arbat-asw3(config-if)#description PTO
+# PTO is vlan 101 name (proizvodstvenno tehnicheski otdel)
+msk-arbat-asw3(config)#swithport mode access
+# assign this port to vlan 101
+msk-arbat-asw3(config)#switchport access vlan 101
+% Access VLAN does not exist. Creating vlan 101
+
+
+# Creating vlan 101 does not mean
+# that it created that
+
+# Create it first (and other also)
+msk-arbat-asw3>enable
+msk-arbat-asw3#configure terminal
+msk-arbat-asw3(config)#vlan 101
+msk-arbat-asw3(config-vlan)#name PTO
+msk-arbat-asw3(config-vlan)#vlan2
+msk-arbat-asw3(config-vlan)#name Management
+msk-arbat-asw3(config-vlan)#vlan 3
+msk-arbat-asw3(config-vlan)#name Servers
+msk-arbat-asw3(config-vlan)#vlan 102
+msk-arbat-asw3(config-vlan)#name FEO
+msk-arbat-asw3(config-vlan)#vlan 103
+msk-arbat-asw3(config-vlan)#name Accounting
+msk-arbat-asw3(config-vlan)#vlan 104
+msk-arbat-asw3(config-vlan)#name Other
+
+msk-arbat-asw3(config-vlan)#exit
+msk-arbat-asw3(config)#interface FastEthernet0/2
+msk-arbat-asw3(config-if)#description PTO
+msk-arbat-asw3(config-if)#switchport mode access
+msk-arbat-asw3(config-if)#swithport access vlan 101
+
+# SAVE
+# save
+msk-arbat-asw3#copy running-config startup-config
+
+# client side (of asw3)
+# connet these 2 PC to switch asw3 by cable
+# set up static IPs on these machines
+# 172.16.3.2 and 172.16.3.3 with mask 255.255.255.0
+# and gateway 172.16.3.1
+# (see ./3_telnet-ssh.txt )
+# check the connection between PC and asw3
+
+# after that set up FE0/16 as acess
+# for vlan 104
+msk-arbat-asw3(config)#interface FastEthernet0/16
+msk-arbat-asw3(config-if)#description Other
+msk-arbat-asw3(config-if)#switchport mode access
+msk-arbat-asw3(config-if)#swithport access vlan 104
+
+msk-arbat-asw3#copy running-config startup-config
+
+# and if there is even 172.16.3.5 ip on 0/16 port (vlan 104)
+# one shouldn't ping this PC from 172.16.3.2 and x.x.x.3
+
+
+########################
+# asw3 trunk port
+########################
+
+# as trunk uplink port use GE1/1
+msk-arbat-asw3(config)#interface GigabitEthernet1/1
+msk-arbat-asw3(config-if)#description msk-arbat-dsw1
+msk-arbat-asw3(config-if)#switchport mode trunk
+msk-arbat-asw3(config-if)#switcchport trunk allowed vlan 2,101-104
+msk-arbat-asw3#copy running-config startup-config
+
+# if need to add another vlan into the trunk:
+msk-arbat-asw3(config-if)#switchport trunk allowed vlan add 105
+
+
+########################
+# dsw1 trunk setup
+########################
+
+# GE1/2 to the msk-arbat-asw3
+# FE0/1 to the msk-rubl-asw1
+
+msk-arbat-dsw1(config)#interface GigabitEthernet1/2
+msk-arbat-dsw1(config-if)#description msk-arbat-asw3
+msk-arbat-dsw1(config-if)#switchport mode trunk
+msk-arbat-dsw1(config-if)#switchport trunk allowed vlan 2,101-104
+msk-arbat-dsw1(config-if)#interface FastEthernet0/1
+msk-arbat-dsw1(config-if)#description msk-rubl-asw1
+msk-arbat-dsw1(config-if)#swithport mode trunk
+msk-arbat-dsw1(config-if)#sitchport trunk allowed vlan 2,101,104
+msk-arbat-dsw1#copy running-config startup-config
+
+########################
+# asw1 access and trunk
+########################
+
+msk-rubl-asw1(config)#interface FastEthernet0/24
+msk-rubl-asw1(config-if)#switchport mode trunk
+msk-rubl-asw1(config-if)#switchport trunk allowed vlan 2,101,104
+msk-rubl-asw1(config-if)#int FastEthernet0/1
+msk-rubl-asw1(config-if)#description PTO
+msk-rubl-asw1(config-if)#switchport mode access
+msk-rubl-asw1(config-if)#switchport access vlan 101
+% Access VLAN does not exist. Creating vlan 101
+
+# again need to setup vlans
+msk-rubl-asw1>enable
+msk-rubl-asw1#configure terminal
+msk-rubl-asw1(config)#vlan 101
+msk-rubl-asw1(config-vlan)#name PTO
+msk-rubl-asw1(config-vlan)#
+msk-arbat-asw3#copy running-config startup-config
+
+# assign to
+# PC connected to msk-rubl-asw1 to FE0/1
+# IP 172.16.3.4
+# and try to ping 172.16.3.2 and x.3 (should be success)
+
+# continue to setup asw1
+# add vlan 104
+msk-rubl-asw1(config)#int FastEthernet0/16
+msk-rubl-asw1(config-if)#switchport mode access
+msk-rubl-asw1(config-if)#switchport access vlan 104
+msk-arbat-asw3#copy running-config startup-config
+
+# connect another PC to the asw1 at FE0/16
+# give it 172.16.6.3 255.255.255.0 and 172.16.6.1 gw
+# and check link
+
+
+########################
+# Management vlan
+########################
+
+# from which control all ?
+
+msk-arbat-dsw1(config)#interface vlan 2
+msk-arbat-dsw1(config-if)#description Management
+msk-arbat-dsw1(config-if)#ip address 172.16.1.2 255.255.255.0
+
+msk-arbat-asw3(config)#interface vlan 2
+msk-arbat-asw3(config-if)#description Management
+msk-arbat-asw3(config-if)#ip address 172.16.1.5 255.255.255.0
+
+# ping msk-arbat-dsw1 from msk-arbat-asw3
+msk-arbat-asw3#ping 172.16.1.2
+...
+Success rate is 60 percent (3/5), round-trip min/avg/max =4/4/4 ms
+
+# the rest is
+# to setup IPs ono other switches
+# and check their accessebility
+
+

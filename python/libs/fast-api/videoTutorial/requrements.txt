@@ -1,0 +1,20 @@
+# for backend
+fastapi
+# Uvicorn is an ASGI (async) web server implementation for Python.
+uvicorn
+
+
+# to connect to db (2mb)
+sqlalchemy
+# but this lib cannot async, so
+# we will use it only for request generation
+# in other cases - use core libs
+
+# for async work with dbases (1.6mb)
+databases
+
+# and wrapper for postgresql (2.6mb)
+"databases[postgresql]"
+
+# and lib-adapter to connect to postgresql (3mb)
+psycopg2-binary

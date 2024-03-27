@@ -1,0 +1,75 @@
+
+########################
+# simulate netwrks:
+########################
+
+1. Packet tracer (free, win/linux)
+2. GNS3 simulator
+
+
+########################
+# connection types
+########################
+
+1. GUI
+2. Cisco SDM (web interface)
+3. CLI (command line interface)
+4. via console cable
+5. telnet/ssh
+
+ 1 - not our method, 2 - laggy
+
+# Console Cable (4)
+
+Cisco router uses RJ-45 type cable (blue color) and
+on other hand DB-9 mama to connet to COM port on PC side.
+Modern PC don't have com ports, need to use USB-to-COM adapters
+# to set up router use:
+# Hyperterminal or Putty - windows
+# Minicom - linux
+
+# minicom
+
+1. plug in RJ-45 side
+2. install minicom:
+$ apt-get install minicom
+3. switch to root
+4. clear the buffer:
+$ dmesg -C
+5. test that it's clear:
+$ dmesg | grep USB
+6. plug in usb side to PC
+7. repeat last command, should ee something like that:
+$ dmesg | grep USB
+[5935.421099] usb 7-2: new full-speed USB devise number 12 using xhci_hcd
+...
+[5935.495919] usb 7-2: ch341-uart converter now attached to ttyUSB0
+# this ttyUSB0 is what we need
+8. start minicom setup mode
+$ minicom -s (-s setup key)
+9. serial port setup -> A (serial device) (edit it to /dev/ttyUSB0), E (speed of the serial ports) (set to 9600 8N1 if it cisco)
+10. press enter to exit serial port setup
+11. Save setup as dfl
+12. exit (not exit from minicom)
+13. turn on the router (plug in power cable), should appear "system bootstrap messages"
+    it takes a while to boot...
+
+ now we get access to the router
+
+ROUTER1>enable (to get root)
+# see currernt port allocation
+ROUTER1#show ip int brief
+# show running config
+ROUTER1#show running-config
+# save changes and exit
+ROUTER1#write memory
+
+ to exit from minicom properly:
+
+ctrl+a -> z -> x -> yes
+
+# when calling next time use
+$minicom instead of $minicomm -s
+
+
+

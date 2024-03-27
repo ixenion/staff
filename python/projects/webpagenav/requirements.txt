@@ -1,0 +1,3 @@
+pip3 install selenium (5mb)	# allows to interract with html elements (grab and interact) (needs brovser interface, not for android)
+
+
