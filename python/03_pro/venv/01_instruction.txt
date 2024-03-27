@@ -1,0 +1,59 @@
+# video instruction:
+https://youtu.be/Kg1Yvry_Ydk?si=kQzT2N_EhFIUxucx
+
+
+# 1.
+# Check check what modules have been installed with system
+# installation (default python libraries)
+$ pip3 list
+
+
+# 2.
+# cd to venvs dirrectory
+
+# 3.
+# Create new virtual environment
+$ python<ver> -m venv <venv_name>
+# Example:
+$ python3.12 -m venv 3_12
+
+# 4.
+# Activate venv
+$ source <venv_name>/bin/activate
+
+# 5.
+# (Optional)
+# Check that into venv
+$ which python
+# Should return something like that:
+/home/user/<venv_name>/bin/python
+
+# 6.
+# (Optional)
+# Check venv libraries
+$ pip list
+# Should be a few libs and no more.
+
+# 7. install lib for venv
+$ pip install requests
+
+# 8.
+# Get libs and their versions
+$ pip freeze
+
+# 9. deactivate venv
+$ deactivate
+
+# 10.
+# Delete venv
+# Just delete folder <venv_name>
+
+
+# 11.
+# Create venv with access to the system packages
+$ python<ver> -m venv <venv_name> --system-site-packages
+# Then activate as before. Done.
+
+# 12.
+# Check dependencies which have been installed while in [11]
+$ pip list --local
