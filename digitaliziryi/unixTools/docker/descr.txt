@@ -29,7 +29,8 @@ $ docker run -it --name debian debian
 $ docker run -it --rm --name debian debian
 
 # exit container
-as usual terminal exit
+# (as usual terminal exit)
+$ exit
 
 # check active containers
 $ docker ps
@@ -44,15 +45,15 @@ $ docker ps -l
 $ docker images
 
 # stop container
-# <id|name> could be retreived from "docker ps -a"
+# <id|name> can be retreived with "docker ps -a"
 $ docker stop <id|name>
 
 # start container
-# <id|name> could be retreived from "docker ps -a"
+# <id|name> can be retreived with "docker ps -a"
 $ docker start <id|name>
 
 # remove (delete) contaimer
-# <id|name> could be retreived from "docker ps -a"
+# <id|name> can be retreived with "docker ps -a"
 $ docker rm <id|name>
 
 # remove (delete) image
