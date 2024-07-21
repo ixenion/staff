@@ -4,3 +4,18 @@ Linux:
 sudo apt install python3-dev
 python3.11 -m pip install pyinstaller
 $ pythonstaller --onefile main.py
+
+
+# VENV
+python3.11 -m venv venv
+source ...
+pip install PyInstaller
+
+# possible error:
+PyInstaller.exceptions.PythonLibraryNotFoundError: Python library not found: libpython3.11.so, libpython3.11.so.1.0
+
+# solution:
+sudo apt install libpython3.11-dev
+
+# If need to add additional data (like config.toml etc)
+pyinstaller --add-data "utils/config.toml:utils/" --onefile main.py

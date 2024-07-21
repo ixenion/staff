@@ -1,5 +1,0 @@
-# install
-sudo apt install vokoscreen
-
-# usage
-vokoscreen

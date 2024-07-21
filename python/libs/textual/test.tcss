@@ -1,0 +1,14 @@
+Box {
+    width: 10;
+    height: 5;
+    position: relative; /* Use relative positioning */
+}
+Box.one {
+    background: red;
+    z-index: 1; /* Lower stacking order */
+}
+Box.two {
+    background: green;
+    z-index: 2; /* Higher stacking order to overlap */
+    position: absolute; /* Use absolute positioning */
+}

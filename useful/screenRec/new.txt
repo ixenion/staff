@@ -1,0 +1,5 @@
+# Install
+sudo apt-get install screenkey
+
+# Run
+$ screenkey --persistent -t 0.3

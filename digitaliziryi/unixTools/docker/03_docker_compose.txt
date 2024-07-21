@@ -1,0 +1,6 @@
+# Start containers using:
+# 'docker-compose.yaml' and '.env'
+$ sudo docker compose up
+
+# Clear all images and etc
+$ sudo docker system prune --all
