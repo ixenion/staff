@@ -68,6 +68,31 @@ $ git remote add origin <repository URL>
 
 $ git push -u <default branch>
 # git push -u origin master
+# # Or just
+# git push
 
 
 
+
+# 7. Fetches the latest changes
+
+# The git pull command fetches the latest changes made by
+# other contributors from a remote repository and automatically
+# merges them into the current branch. By connecting to a remote
+# repository, you can collaborate with other developers and
+# contribute to open-source projects.
+
+$ git pull
+
+
+# 8. Create a branch
+$ git branch <branch-name>
+
+
+# 9. Switch to the branch
+
+$ git checkout <branch-name>
+
+
+# 10. Combine 8 & 9
+$ git checkout -b <branch-name>
