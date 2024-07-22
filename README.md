@@ -1,2 +1,3 @@
-# staff
-Just to store some notes and configs
+# Staff
+
+Storage for notes and configs examples.
