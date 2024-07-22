@@ -1,0 +1,69 @@
+#########################
+# LOG HIGHLIGHT EXAMPLE #
+#########################
+
+# 1. Create syntax config
+# Example:
+$ vim ~/.config/nvim/syntax/log.vim
+
+###### START OF FILE #####
+
+" Highlight timestamps
+syntax match logTimestamp /\d\{4\}-\d\{2\}-\d\{2\}T\d\{2\}:\d\{2\}:\d\{2}\.\d\{6\}+[0-9:-]\+/
+highlight logTimestamp ctermfg=LightGreen guifg=LightGreen
+
+" Highlight severity levels
+syntax match DebuglogSeverity /\<DEBUG\>/
+highlight DebuglogSeverity ctermfg=Blue guifg=Cyan
+syntax match InfologSeverity /\<INFO\>/
+highlight InfologSeverity ctermfg=Green guifg=Green
+syntax match WarninglogSeverity /\<WARNING\>/
+highlight WarninglogSeverity ctermfg=Yellow guifg=Yellow
+syntax match ErrorlogSeverity /\<ERROR\>/
+highlight ErrorlogSeverity ctermfg=Red guifg=Red
+
+" Highlight key-value pairs
+syntax match logKeyValue /\b\w\+:\s\+\w\+'\w*'*\s*(\w\+='\w*')*'/ contained
+highlight logKeyValue ctermfg=Blue guifg=Blue
+   
+" Highlight word Style
+syntax match logStyle /\<Style:\s\w*\>/ contained
+highlight logStyle ctermfg=Green guifg=Green
+
+
+" COLORS
+" Black
+" DarkBlue
+" DarkGray
+" LightBlue
+" Blue
+" DarkGreen
+" LightGreen
+" Green
+" DarkCyan
+" LightCyan
+" Cyan
+" DarkRed
+" LightRed
+" Red
+" DarkMagenta
+" LightMagenta
+" Magenta
+" Brown
+" Yellow
+" LightGray
+" Gray
+" White
+
+
+###### END OF FILE #####
+
+
+# 2. Create 'ftdetect'
+$ vim ~/.config/nvim/ftdetect/log.vim
+
+###### START OF FILE #####
+
+au BufRead,BufNewFile *.log set filetype=log
+
+###### END OF FILE #####
