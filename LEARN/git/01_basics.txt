@@ -28,7 +28,7 @@ git remote add origin https://repo_addr
 git remote -v
 # need once
 git push -u origin master
-# tags do not pushed aytomaticaly
+# tags do not pushed automaticaly
 git push --tags
 
 # add new branch
