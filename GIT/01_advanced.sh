@@ -66,7 +66,7 @@ $ git show ff9e2df
 $ git show HEAD
 # View previous commit
 $ git show HEAD~1
-# View particular file (without diff, just content)
+# View particular file (without diff, just full content)
 $ git show HEAD~1:bin/app.bin
 # View commit tree, to get particular file (blob) or folder (tree) uid
 $ git ls-tree HEAD~1
