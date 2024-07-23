@@ -30,11 +30,20 @@ $ git config --global core.autocrlf true
 $ git config --global core.autocrlf input
 
 # Set up diff tool
+# Set name for difftool. "vscode" not associated with any binary.
 $ git config --global diff.tool vscode
 # There are some tools for diff:
 # KDiff3, P4Merge, WinMerge (Windows only), VSCode.
 # How to launch vscode
 $ git config --global difftool.vscode.cmd "code --wait --diff $LOCAL $REMOTE"
+
+# Set up diff tool for nvim
+git config --global diff.tool nvim
+git config --global difftool.nvim.cmd "nvim -d $LOCAL $REMOTE"
+# Check that settings applyed (usually 'local remote' part missing)
+$ git config --global -e
+
+   
 
 
 
