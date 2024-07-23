@@ -1,12 +1,12 @@
-############
-# ADVANCED #
-############
+########################
+#  CREATING SNAPSHOTS  #
+########################
 
 
 # 1. Delete file
 $ rm file1.txt
 $ git add file1.txt
-# Or
+# Or in short
 $ git rm file1.txt
 
 
@@ -27,7 +27,7 @@ $ git ls-files
 $ touch .gitignore
 # Then fill in ".gitignore"
 # Example:
-# Check "02_gitignore_example.txt"
+# Check "10_gitignore_example.txt"
 
 
 # 6. Remove files from stage but not from system
