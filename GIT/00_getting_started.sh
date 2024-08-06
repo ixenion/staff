@@ -15,7 +15,7 @@ $ sudo apt install git
 # Configuration levels:
 - system    # All users
 - global    # All repositories of the current usre
-- local     # THe current repository
+- local     # The current repository
 
 
 #############
@@ -25,7 +25,7 @@ $ sudo apt install git
 $ git config --global user.name "NAME"
 $ git config --global user.email EMAIL@gmail.com
 # set default editor
-$ git config --global core.editor "nv"
+$ git config --global core.editor "nvim"
 # edit git global settings with default editor
 $ git config --global -e
 # How git should handle end of lines
@@ -36,7 +36,7 @@ $ git config --global core.autocrlf true
 # "\n" new line
 $ git config --global core.autocrlf input
 
-# Set up diff tool
+# Set up diff tool for VSCode
 # Set name for difftool. "vscode" not associated with any binary.
 $ git config --global diff.tool vscode
 # There are some tools for diff:
@@ -44,7 +44,7 @@ $ git config --global diff.tool vscode
 # How to launch vscode
 $ git config --global difftool.vscode.cmd "code --wait --diff $LOCAL $REMOTE"
 
-# Set up diff tool for nvim
+# Set up diff tool for neo-vim
 git config --global diff.tool nvim
 git config --global difftool.nvim.cmd "nvim -d $LOCAL $REMOTE"
 # Check that settings applyed (usually 'local remote' part missing)

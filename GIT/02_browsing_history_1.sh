@@ -196,4 +196,119 @@ $ git log --oneline --patch toc.txt
 #  FORMATTING THE LOG OUTPUT  #
 ###############################
 
+# Default log output command
+$ git log
+# Output
+'
+commit a642e1229e3cb69be9bf075d9fe5e752e9a17458 (HEAD -> master)
+Author: Moshfegh Hamedani <moshfegh@live.com.au>
+Date:   Tue Aug 18 09:23:19 2020 -0700
 
+    Add header to all pages.
+
+commit 50db98710ed4330773f1df55b2a177600d523c9e
+Author: Moshfegh Hamedani <moshfegh@live.com.au>
+Date:   Mon Aug 17 14:27:50 2020 -0700
+
+    Include the first section in TOC.
+'
+
+# 11. Custom log output format
+$ git log --pretty=format:"hello %an"
+# %an   Author Name
+# Output
+'
+hello Moshfegh Hamedani
+hello Moshfegh Hamedani
+hello Moshfegh Hamedani
+hello Moshfegh Hamedani
+hello Moshfegh Hamedani
+hello Moshfegh Hamedani
+hello Moshfegh Hamedani
+hello Moshfegh Hamedani
+hello Moshfegh Hamedani
+hello Moshfegh Hamedani
+hello Moshfegh Hamedani
+hello Moshfegh Hamedani
+hello Moshfegh Hamedani
+'
+
+$ git log --pretty=format:"%an commited %H"
+# %an   Author Name
+# %H    Commit ID (hash) - full
+# Output
+'
+Moshfegh Hamedani commited a642e1229e3cb69be9bf075d9fe5e752e9a17458
+Moshfegh Hamedani commited 50db98710ed4330773f1df55b2a177600d523c9e
+Moshfegh Hamedani commited 555b62e1ebb92c97fc69910ad0981a7d6dbbf8c6
+...
+'
+
+$ git log --pretty=format:"%an commited %h"
+# %an   Author Name
+# %h    Commit ID (hash) - short
+# Output
+'
+Moshfegh Hamedani commited a642e12
+Moshfegh Hamedani commited 50db987
+Moshfegh Hamedani commited 555b62e
+Moshfegh Hamedani commited 91f7d40
+...
+'
+
+# Placeholders that expand to information extracted from the commit:
+# Source: https://git-scm.com/docs/git-log
+# See 11_git_placeholders.txt
+
+
+$ git log --pretty=format:"%an %h $cd"
+# %an   Author Name
+# %h    Commit ID (hash) - short
+# %cd   Commit date
+# Output
+'
+Moshfegh Hamedani a642e12 Tue Aug 18 09:23:19 2020 -0700
+Moshfegh Hamedani 50db987 Mon Aug 17 14:27:50 2020 -0700
+Moshfegh Hamedani 555b62e Mon Aug 17 14:26:49 2020 -0700
+Moshfegh Hamedani 91f7d40 Mon Aug 17 14:25:43 2020 -0700
+'
+
+# Colorize
+$ git log --pretty=format:"%Cgreen%an%Creset %h %cd"
+# %an   Author Name
+# %h    Commit ID (hash) - short
+# %cd   Commit date
+# Output
+'
+Moshfegh Hamedani a642e12 Tue Aug 18 09:23:19 2020 -0700
+Moshfegh Hamedani 50db987 Mon Aug 17 14:27:50 2020 -0700
+Moshfegh Hamedani 555b62e Mon Aug 17 14:26:49 2020 -0700
+Moshfegh Hamedani 91f7d40 Mon Aug 17 14:25:43 2020 -0700
+'
+
+
+
+#############
+#  ALIASES  #
+#############
+
+# 12. Create short alias (lg in this particular example)
+$ git config --global alias.lg "log --pretty=format:'%an %h'"
+# Check git config
+$ git config --global -e
+# Output
+"
+...
+[alias]
+    lg = log --pretty=format:'%an %h'
+"
+# Use alias
+$ git lg
+
+
+# 13. Unstaeg changes alias (undo add command)
+$ git config --global alias.unstage "restore --staged ."
+
+
+# Next see
+# 02_browsing_history_2.sh
